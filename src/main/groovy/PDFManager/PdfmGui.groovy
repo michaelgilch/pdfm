@@ -1,5 +1,8 @@
 package PDFManager
 
+// allow references to logInfo() rather than LogHelper.logInfo()
+import static LogHelper.*
+
 class PdfmGui {
 
     PdfmGui() {
@@ -9,6 +12,6 @@ class PdfmGui {
     static void main(String[] args) {
         new PdfmGui()
         def pdfmController = new Pdfm()
-        println pdfmController.getGreeting()
+        logInfo(pdfmController.getGreeting())
     }
 }

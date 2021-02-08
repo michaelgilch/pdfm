@@ -7,6 +7,7 @@ plugins {
 }
 
 sourceCompatibility = 1.8
+applicationDefaultJvmArgs = ["-Dlogback.configurationFile=conf/logback.groovy"]
 
 repositories {
     // Use JCenter for resolving dependencies.
@@ -20,10 +21,29 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
 
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+
+    // Testing
     testImplementation 'junit:junit:4.13'
+}
+
+task copyLogConfig(type: Copy) {
+    from file ('src/main/groovy/PDFManager/logback.groovy')
+    into file ('conf/')
+}
+
+task cleanConfigs(type: Delete) {
+    delete 'conf'
 }
 
 application {
     // Define the main class for the application.
     mainClass = 'PDFManager.PdfmGui'
 }
+
+compileGroovy.dependsOn copyLogConfig
+clean.dependsOn cleanConfigs
+

@@ -25,5 +25,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'PDFManager.App'
+    mainClass = 'PDFManager.PdfmGui'
 }

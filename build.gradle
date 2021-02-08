@@ -36,7 +36,7 @@ dependencies {
 }
 
 task copyLogConfig(type: Copy) {
-    from file ('src/main/groovy/PDFManager/logback.groovy')
+    from file ('src/main/groovy/PDFManager/utils/logback.groovy')
     into file ('conf/')
 }
 

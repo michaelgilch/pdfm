@@ -1,7 +1,7 @@
 package PDFManager
 
 // allow references to logInfo() rather than LogHelper.logInfo()
-import static LogHelper.*
+import static PDFManager.utils.LogHelper.*
 
 class PdfmGui {
 

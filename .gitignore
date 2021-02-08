@@ -6,5 +6,6 @@ build
 .idea
 
 # Configuration and logging
+db
 conf
 log

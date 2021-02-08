@@ -21,6 +21,11 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
 
+    // Database
+    implementation 'com.h2database:h2:1.4.199'
+    implementation 'org.apache.tomcat:tomcat-jdbc:8.5.0'
+    implementation 'org.grails:grails-datastore-gorm-hibernate5:6.1.9.RELEASE'
+
     // Logging
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'ch.qos.logback:logback-classic:1.2.3'

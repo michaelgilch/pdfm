@@ -1,0 +1,29 @@
+plugins {
+    // Apply the groovy Plugin to add support for Groovy.
+    id 'groovy'
+
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    // Use JCenter for resolving dependencies.
+    jcenter()
+}
+
+dependencies {
+    // Use the latest Groovy version for building this library
+    implementation 'org.codehaus.groovy:groovy-all:2.5.12'
+
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:29.0-jre'
+
+    testImplementation 'junit:junit:4.13'
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'PDFManager.App'
+}

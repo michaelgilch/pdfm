@@ -1,12 +1,14 @@
 package PDFManager
 
+import PDFManager.uiComponents.*
+
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static PDFManager.utils.LogHelper.*
 
 import groovy.swing.SwingBuilder
 
 import static java.awt.Component.CENTER_ALIGNMENT
-import static java.awt.Component.LEFT_ALIGNMENT
+
 import java.awt.*
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE
@@ -45,11 +47,11 @@ class PdfmGui {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        gui.refreshButton = button(text: 'Refresh', minimumSize: STANDARD_BUTTON_SIZE, preferredSize: STANDARD_BUTTON_SIZE, actionPerformed: { refreshFileList() })
+                        gui.refreshButton = button( new Button('Refresh'), actionPerformed: { refreshFileList() })
                         glue()
                         gui.searchBox = textField(text: '', font: textBoxFont, minimumSize: SEARCH_BOX_SIZE, preferredSize: SEARCH_BOX_SIZE, maximumSize: SEARCH_BOX_SIZE)
                         hstrut(COMPONENT_SPACING)
-                        gui.searchButton = button(text: 'Search', minimumSize: STANDARD_BUTTON_SIZE, preferredSize: STANDARD_BUTTON_SIZE, actionPerformed: { refreshFileList() })
+                        gui.searchButton = button( new Button('Search'), actionPerformed: { refreshFileList() })
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: DEFAULT_GUI_SIZE) {
                         gui.scrollablePdfList = scrollPane(
@@ -61,11 +63,11 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
-                        button(text: 'Edit', actionPerformed: { editPdfAttributes() })
+                        button(new Button('Edit'), actionPerformed: { editPdfAttributes() })
                         hstrut(COMPONENT_SPACING)
-                        button(text: 'Send', actionPerformed: { sendPdfToRemarkable() })
+                        button(new Button('Send'), actionPerformed: { sendPdfToRemarkable() })
                         hstrut(COMPONENT_SPACING)
-                        button(text: 'Open', actionPerformed: { openPdf() })
+                        button(new Button('Open'), actionPerformed: { openPdf() })
                     }
                 }
             }

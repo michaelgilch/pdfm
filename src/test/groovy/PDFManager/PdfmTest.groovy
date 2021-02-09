@@ -6,17 +6,18 @@ import PDFManager.domain.PdfData
 
 class PdfmTest {
 
-    @Test
-    void TestPdfm() {
-        def pdfController = new Pdfm()
-        assert pdfController.getGreeting() == 'Hello World from the Controller!'
+    def initializeTestConfig() {
+        // TODO write test initialization
     }
 
     @Test
-    void TestAddDbEntry() {
-        def pdfController = new Pdfm()
+    void TestCheckFilesystemForChanges() {
+        def pdfmController = new Pdfm('src/test/resources/test_config.properties')
+
+        pdfmController.checkFilesystemForChanges()
+
         PdfData.withNewSession {
-            println PdfData.count
+            assert PdfData.count == 1
         }
     }
 }

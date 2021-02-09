@@ -11,27 +11,32 @@ import org.grails.orm.hibernate.HibernateDatastore
 
 class Pdfm {
 
-    static Properties pdfConfig
-    static HibernateDatastore hibernateDatastore
+    Properties pdfConfig
+    HibernateDatastore hibernateDatastore
 
-    static {
+    Pdfm() {
+        logInfo("Using Default Config")
+        runPdfmController("conf/config.properties")
+    }
+
+    Pdfm(String pathToConfig) {
+        logInfo("Using Config: ${pathToConfig}")
+        runPdfmController(pathToConfig)
+    }
+
+    def runPdfmController(String pathToConfig) {
         logInfo("Fetching configuration...")
-        PdfConfig pc = new PdfConfig()
+        PdfConfig pc = new PdfConfig(new File(pathToConfig))
         pdfConfig = pc.getConfigProperties()
 
         hibernateDatastore = initializeAppDatabase()
 
         createFileStorageDirIfNeeded()
 
-        runPdfmController()
-    }
-
-    static def runPdfmController() {
         logInfo("pdfm Controller Started.")
-        checkFilesystemForChanges()
     }
 
-    static def createFileStorageDirIfNeeded() {
+    def createFileStorageDirIfNeeded() {
         // check for pdf storage folder and create if it does not already exist
         File storageDir = new File(pdfConfig.getProperty('storageFolder'))
         if (!storageDir.exists()) {
@@ -40,7 +45,7 @@ class Pdfm {
         }
     }
 
-    static def initializeAppDatabase() {
+    def initializeAppDatabase() {
 
         logInfo("Initializing the database...")
         Map databaseConfig = [
@@ -52,7 +57,7 @@ class Pdfm {
         return new HibernateDatastore(databaseConfig, domainClassPackage)
     }
 
-    static def checkFilesystemForChanges() {
+    def checkFilesystemForChanges() {
         File pdfDirectory = new File(pdfConfig.getProperty('storageFolder'))
         pdfDirectory.eachFile { File absoluteFilename ->
             if (absoluteFilename.isFile()) {
@@ -89,7 +94,7 @@ class Pdfm {
         }
     }
 
-    static def generateMD5(File file) {
+    def generateMD5(File file) {
         def digest = MessageDigest.getInstance("MD5")
         file.eachByte(4096) {buffer, length ->
             digest.update(buffer, 0, length)

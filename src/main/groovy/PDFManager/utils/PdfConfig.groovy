@@ -5,7 +5,7 @@ import static LogHelper.*
 
 class PdfConfig {
 
-    static File configFile = new File('conf/config.properties')
+    static File configFile
 
     static Map defaultConfig = [
             'databaseSource':'jdbc:h2:file:./db/pdfm',
@@ -14,7 +14,8 @@ class PdfConfig {
 
     Properties propertiesToUse = null
 
-    PdfConfig() {
+    PdfConfig(File config) {
+        configFile = config
         Properties defaultProperties = loadDefaultConfigProperties()
         Properties userProperties = loadUserConfigProperties()
         propertiesToUse = new Properties()
@@ -66,6 +67,7 @@ class PdfConfig {
     }
 
     private static saveConfigProperties(Properties props) {
+        logInfo(configFile.getAbsolutePath())
         File directory = new File(configFile.getParent())
         if (!directory.exists()) {
             directory.mkdirs()

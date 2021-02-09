@@ -67,9 +67,18 @@ class Pdfm {
                                     descriptiveName: "test",
                             )
                             try {
+                                logInfo("Adding new PDF file: " + absoluteFilename)
                                 newPdf.save(failOnError: true, flush: true)
                             } catch (Exception e) {
-                                logError("Unable to add new Pdf File: " + absoluteFilename, e)
+                                logError("Unable to add new PDF File: " + absoluteFilename, e)
+                            }
+                        } else if (pdfDomainObj[0].fileName != absoluteFilename.getName()) {
+                            logInfo("Detected filename change from ${pdfDomainObj[0].fileName} to ${absoluteFilename.getName()}")
+                            pdfDomainObj[0].fileName = absoluteFilename.getName()
+                            try {
+                                pdfDomainObj[0].save(failOnError: true, flush: true)
+                            } catch (Exception e) {
+                                logError("Unable to rename existing PDF data for " + absoluteFilename, e)
                             }
                         }
                     }

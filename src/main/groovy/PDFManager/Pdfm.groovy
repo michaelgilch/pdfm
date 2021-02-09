@@ -1,5 +1,7 @@
 package PDFManager
 
+import java.security.MessageDigest
+
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static PDFManager.utils.LogHelper.*
 import PDFManager.domain.PdfData
@@ -26,6 +28,7 @@ class Pdfm {
 
     static def runPdfmController() {
         logInfo("pdfm Controller Started.")
+        checkFilesystemForChanges()
     }
 
     static def createFileStorageDirIfNeeded() {
@@ -48,4 +51,41 @@ class Pdfm {
         Package domainClassPackage = PdfData.getPackage()
         return new HibernateDatastore(databaseConfig, domainClassPackage)
     }
+
+    static def checkFilesystemForChanges() {
+        File pdfDirectory = new File(pdfConfig.getProperty('storageFolder'))
+        pdfDirectory.eachFile { File absoluteFilename ->
+            if (absoluteFilename.isFile()) {
+                def md5 = generateMD5(absoluteFilename)
+                PdfData.withNewSession {
+                    PdfData.withTransaction {
+                        def pdfDomainObj = PdfData.findAllByMd5(md5)
+                        if (pdfDomainObj.isEmpty()) {
+                            def newPdf = new PdfData(
+                                    md5: md5,
+                                    fileName: absoluteFilename.getName(),
+                                    descriptiveName: "test",
+                            )
+                            try {
+                                newPdf.save(failOnError: true, flush: true)
+                            } catch (Exception e) {
+                                logError("Unable to add new Pdf File: " + absoluteFilename, e)
+                            }
+                        }
+                    }
+                }
+            } else if (absoluteFilename.isDirectory()) {
+                logError("Sub-Directories are not checked: " + absoluteFilename)
+            }
+        }
+    }
+
+    static def generateMD5(File file) {
+        def digest = MessageDigest.getInstance("MD5")
+        file.eachByte(4096) {buffer, length ->
+            digest.update(buffer, 0, length)
+        }
+        new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
+    }
+
 }

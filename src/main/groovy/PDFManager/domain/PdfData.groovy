@@ -11,6 +11,7 @@ class PdfData implements GormEntity<PdfData>, Serializable {
     @Id
     int id
 
+    String md5
     String fileName
     String descriptiveName
 }

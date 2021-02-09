@@ -9,3 +9,7 @@ build
 db
 conf
 log
+
+# Debug Flags
+debugPauseDirectoryScanning
+

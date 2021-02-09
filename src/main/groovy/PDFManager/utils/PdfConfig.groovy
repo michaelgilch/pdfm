@@ -10,6 +10,7 @@ class PdfConfig {
     static Map defaultConfig = [
             'databaseSource':'jdbc:h2:file:./db/pdfm',
             'storageFolder':'/home/michael/pdfStore/',
+            'filesystemRefreshTimer':'0',
     ]
 
     Properties propertiesToUse = null

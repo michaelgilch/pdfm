@@ -13,6 +13,9 @@ class Pdfm {
 
     Properties pdfConfig
     HibernateDatastore hibernateDatastore
+    int fsRefreshInterval = 0
+
+    static File debugPauseDirectoryScanningFile = new File('debugPauseDirectoryScanning')
 
     Pdfm() {
         logInfo("Using Default Config")
@@ -34,6 +37,17 @@ class Pdfm {
         createFileStorageDirIfNeeded()
 
         logInfo("pdfm Controller Started.")
+
+        fsRefreshInterval = pdfConfig.getProperty('filesystemRefreshTimer').toInteger()
+        if (fsRefreshInterval == 0) {
+            logInfo("Filesystem Refresh set to Manual.")
+            checkFilesystemForChanges()
+        } else {
+            logInfo("Filesystem Refresh set to every ${fsRefreshInterval} minute(s).")
+            Thread.start("directoryScanningThread") {
+                startDirectoryScanningThread()
+            }
+        }
     }
 
     def createFileStorageDirIfNeeded() {
@@ -46,7 +60,6 @@ class Pdfm {
     }
 
     def initializeAppDatabase() {
-
         logInfo("Initializing the database...")
         Map databaseConfig = [
                 'dataSource.dbCreate':'update', // implies 'create'
@@ -102,4 +115,15 @@ class Pdfm {
         new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
     }
 
+    def startDirectoryScanningThread() {
+        def keepRunning =  true
+        logInfo("Start")
+        while (keepRunning) {
+            while (!debugPauseDirectoryScanningFile.exists()) {
+                logInfo("Checking for Changes")
+                checkFilesystemForChanges()
+                Thread.sleep(1000 * 60 * fsRefreshInterval)
+            }
+        }
+    }
 }

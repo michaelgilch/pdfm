@@ -12,6 +12,6 @@ class PdfmGui {
     static void main(String[] args) {
         new PdfmGui()
         def pdfmController = new Pdfm()
-        logInfo(pdfmController.getGreeting())
+        //logInfo(pdfmController.getGreeting())
     }
 }

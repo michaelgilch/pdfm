@@ -9,55 +9,43 @@ import org.grails.orm.hibernate.HibernateDatastore
 
 class Pdfm {
 
-    static PdfConfig pdfConfig
-    static Properties pdfConfigProperties
+    static Properties pdfConfig
     static HibernateDatastore hibernateDatastore
 
     static {
-        pdfConfig = new PdfConfig()
         logInfo("Fetching configuration...")
-        pdfConfigProperties = pdfConfig.getConfigProperties()
+        PdfConfig pc = new PdfConfig()
+        pdfConfig = pc.getConfigProperties()
 
-        logInfo("Setting up database...")
-        Map databaseConfig = [
-                'dataSource.dbCreate':'update', // implies 'create'
-                'dataSource.url':pdfConfigProperties.getProperty('databaseSource'),
-        ]
-        hibernateDatastore = initializeAppDatabase(databaseConfig)
+        hibernateDatastore = initializeAppDatabase()
 
+        createFileStorageDirIfNeeded()
+
+        runPdfmController()
     }
 
-    Pdfm() {
-
-
-        addDbEntry()
-
-        //PdfConfig newConfig = new PdfConfig()
+    static def runPdfmController() {
+        logInfo("pdfm Controller Started.")
     }
 
-    static def initializeAppDatabase(databaseConfig) {
-        Package domainClassPackage = PdfData.getPackage()
-        return new HibernateDatastore(databaseConfig, domainClassPackage)
-    }
-
-    def addDbEntry() {
-        PdfData.withNewSession {
-            PdfData.withTransaction {
-                def newPDF = new PdfData(
-                        fileName: 'test.pdf',
-                        descriptiveName: 'Test PDF'
-                )
-                try {
-                    newPDF.save(failOnError: true, flush: true)
-                } catch (Exception e) {
-                    println "error"
-                }
-            }
+    static def createFileStorageDirIfNeeded() {
+        // check for pdf storage folder and create if it does not already exist
+        File storageDir = new File(pdfConfig.getProperty('storageFolder'))
+        if (!storageDir.exists()) {
+            logInfo("Creating storage directory")
+            storageDir.mkdirs()
         }
     }
 
-    String getGreeting() {
-        logInfo('This is a test log')
-        return 'Hello World from the Controller!'
+    static def initializeAppDatabase() {
+
+        logInfo("Initializing the database...")
+        Map databaseConfig = [
+                'dataSource.dbCreate':'update', // implies 'create'
+                'dataSource.url':pdfConfig.getProperty('databaseSource'),
+        ]
+
+        Package domainClassPackage = PdfData.getPackage()
+        return new HibernateDatastore(databaseConfig, domainClassPackage)
     }
 }

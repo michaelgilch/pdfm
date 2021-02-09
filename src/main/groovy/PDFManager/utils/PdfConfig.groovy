@@ -9,7 +9,7 @@ class PdfConfig {
 
     static Map defaultConfig = [
             'databaseSource':'jdbc:h2:file:./db/pdfm',
-            'storageFolder':'~/pdfStore/',
+            'storageFolder':'/home/michael/pdfStore/',
     ]
 
     Properties propertiesToUse = null
@@ -38,8 +38,10 @@ class PdfConfig {
                 }
             }
         }
-        logInfo("Using configuration: " + propertiesToUse)
-        saveConfigProperties(propertiesToUse)
+        if (userProperties != propertiesToUse) {
+            logInfo("Updating configuration with missing or invalid settings")
+            saveConfigProperties(propertiesToUse)
+        }
     }
 
     Properties getConfigProperties() {

@@ -185,10 +185,11 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Type:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.typeField = textField(font: textBoxFont, text: '<TYPE>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        //gui.typeField = textField(font: textBoxFont, text: '<TYPE>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.typeField = comboBox(font: textBoxFont, items: ['', 'Book', 'Manual', 'CheatSheet'], preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Category:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.categoryField = textField(font: textBoxFont, text: '<CATEGORY>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.categoryField = comboBox(font: textBoxFont, items: ['', 'computer science', 'philosophy', 'productivity'], preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Author:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
@@ -207,7 +208,7 @@ class PdfmGui {
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         gui.cancelButton = button(new Button('Cancel'), actionPerformed: { closeDialog(gui.editDialog) })
                         glue()
-                        gui.saveButton = button(new Button('Save'), actionPerformed: { saveAttributeChanges() })
+                        gui.saveButton = button(new Button('Save'), actionPerformed: { saveAttributeChanges(pdf, gui.displayNameField.getText(), gui.typeField.getSelectedItem(), gui.categoryField.getSelectedItem(), gui.authorField.getText(), gui.publisherField.getText(), gui.yearField.getText(), gui.tagField.getText()) })
                     }
                 }
             }
@@ -230,9 +231,11 @@ class PdfmGui {
         }
     }
 
-    def saveAttributeChanges() {
+    def saveAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags) {
         logInfo('TODO save changes')
+        pdfmController.savePdfAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags)
         closeDialog(gui.editDialog)
+        refreshFileList()
     }
 
     static void main(String[] args) {

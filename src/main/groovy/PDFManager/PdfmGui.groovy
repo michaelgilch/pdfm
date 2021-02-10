@@ -192,7 +192,6 @@ class PdfmGui {
     }
 
     def editPdfAttributes() {
-        logInfo('TODO edit PDF attributes')
         def selectedId = selectedItem.replace('panel', '').toInteger()
         PdfData pdf = pdfmController.getPdfObject(selectedId)
         swingBuilder.edt {
@@ -210,24 +209,24 @@ class PdfmGui {
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Type:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
                         //gui.typeField = textField(font: textBoxFont, text: '<TYPE>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
-                        gui.typeField = comboBox(font: textBoxFont, items: ['', 'Book', 'Manual', 'CheatSheet'], preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.typeField = comboBox(font: textBoxFont, items: ['', 'Book', 'Manual', 'CheatSheet'], selectedItem: pdf.type, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Category:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.categoryField = comboBox(font: textBoxFont, items: ['', 'computer science', 'philosophy', 'productivity'], preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.categoryField = comboBox(font: textBoxFont, items: ['', 'computer science', 'philosophy', 'productivity'], selectedItem: pdf.category, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Author:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.authorField = textField(font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.authorField = textField(font: textBoxFont, text: pdf.author, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Publisher:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.publisherField = textField(font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.publisherField = textField(font: textBoxFont, text: pdf.publisher, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Year:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.yearField = textField(font: textBoxFont, text: '', minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
+                        gui.yearField = textField(font: textBoxFont, text: pdf.year, minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
                         label(horizontalAlignment: JLabel.RIGHT, verticalAlignment: JLabel.TOP, font: labelFont, text: 'Tags:  ', minimumSize: [100, 90], preferredSize: [100, 90], maximumSize: [100, 90])
-                        gui.tagField = textArea(wrapStyleWord: true, lineWrap: true, editable: true, font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 90], maximumSize: [DEFAULT_GUI_WIDTH, 90], border: lineBorder(color: Color.GRAY, thickness: 1))
+                        gui.tagField = textArea(wrapStyleWord: true, lineWrap: true, editable: true, font: textBoxFont, text: pdf.tags, preferredSize: [DEFAULT_GUI_WIDTH, 90], maximumSize: [DEFAULT_GUI_WIDTH, 90], border: lineBorder(color: Color.GRAY, thickness: 1))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         gui.cancelButton = button(new Button('Cancel'), actionPerformed: { closeDialog(gui.editDialog) })

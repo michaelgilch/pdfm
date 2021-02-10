@@ -141,7 +141,7 @@ class Pdfm {
                             def newPdf = new PdfData(
                                     md5: md5,
                                     fileName: absoluteFilename.getName(),
-                                    //descriptiveName: "test",
+                                    descriptiveName: "",
                             )
                             try {
                                 logInfo("Adding new PDF file: " + absoluteFilename)

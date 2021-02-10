@@ -35,9 +35,9 @@ class PdfmGui {
     Pdfm pdfmController
     SwingBuilder swingBuilder
 
-    static Font textBoxFont = new Font('Arial', Font.BOLD, 12)
-    static Font pdfTitleFont = new Font('Arial', Font.BOLD, 12)
-    static Font labelFont = new Font('Arial', Font.PLAIN, 12)
+    static Font textBoxFont = new Font('DejaVu Sans', Font.BOLD, 12)
+    static Font pdfTitleFont = new Font('DejaVu Sans', Font.BOLD, 14)
+    static Font labelFont = new Font('DejaVu Sans', Font.PLAIN, 14)
 
     def gui = [
             mainWindow: null,
@@ -112,12 +112,32 @@ class PdfmGui {
                 pdfDomainObjects.each { pdfDomainObj ->
                     //objCount++
                     def panelId = "panel" + pdfDomainObj.id
-                    hbox(background: Color.BLUE, alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(background: Color.BLUE, alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
+                        gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
                             boxLayout(axis: BoxLayout.Y_AXIS)
-                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
                                 hstrut(COMPONENT_SPACING * 2)
-                                label(new Label(pdfDomainObj.fileName), font: pdfTitleFont)
+                                vbox() {
+                                    if (pdfDomainObj.descriptiveName == "") {
+                                        label(new Label(pdfDomainObj.fileName), font: pdfTitleFont)
+                                    } else {
+                                        label(new Label(pdfDomainObj.descriptiveName), font: pdfTitleFont)
+                                    }
+                                    def authPubYearLine = ""
+                                    if (pdfDomainObj.publisher != "") {
+                                        authPubYearLine += (pdfDomainObj.publisher + " - ")
+                                    }
+                                    if (pdfDomainObj.author != "" || pdfDomainObj.author == null) {
+                                        authPubYearLine += (pdfDomainObj.author + " - ")
+                                    }
+                                    if (pdfDomainObj.year != "" || pdfDomainObj.year == null) {
+                                        authPubYearLine += pdfDomainObj.year
+                                    }
+                                    //label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
+                                    //label(new Label("Author: ${pdfDomainObj.author}, Publisher: ${pdfDomainObj.publisher}"), font:labelFont)
+                                    label(new Label(authPubYearLine), font:labelFont)
+                                }
+
                             }
                         }
                     }
@@ -193,13 +213,13 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Author:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.authorField = textField(font: textBoxFont, text: '<AUTHOR>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.authorField = textField(font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Publisher:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.publisherField = textField(font: textBoxFont, text: '<PUBLISHER>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.publisherField = textField(font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Year:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.yearField = textField(font: textBoxFont, text: '<YEAR>', minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
+                        gui.yearField = textField(font: textBoxFont, text: '', minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
                         label(horizontalAlignment: JLabel.RIGHT, verticalAlignment: JLabel.TOP, font: labelFont, text: 'Tags:  ', minimumSize: [100, 90], preferredSize: [100, 90], maximumSize: [100, 90])

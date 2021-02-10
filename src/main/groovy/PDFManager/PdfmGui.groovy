@@ -137,7 +137,11 @@ class PdfmGui {
                                     //label(new Label("Author: ${pdfDomainObj.author}, Publisher: ${pdfDomainObj.publisher}"), font:labelFont)
                                     label(new Label(authPubYearLine), font:labelFont)
                                 }
-
+                                glue()
+                                vbox() {
+                                    label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
+                                    label(new Label(pdfDomainObj.tags), font: labelFont)
+                                }
                             }
                         }
                     }

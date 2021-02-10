@@ -8,10 +8,11 @@ import static PDFManager.utils.LogHelper.*
 import groovy.swing.SwingBuilder
 
 import static java.awt.Component.CENTER_ALIGNMENT
-
+import static java.awt.Component.LEFT_ALIGNMENT
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.awt.*
 
-import static java.awt.Component.LEFT_ALIGNMENT
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE
 import javax.swing.*
 
@@ -26,6 +27,10 @@ class PdfmGui {
     static int STANDARD_HBOX_HEIGHT = 50
     static def SEARCH_BOX_SIZE = [250, 30]
 
+    //static Color EVEN_ITEM_COLOR = new Color(0, 0, 0, 0)
+    //static Color ODD_ITEM_COLOR = new Color(0,0,0,16)
+    static Color SELECTED_ITEM_COLOR = new Color(0, 185, 255, 128)
+
     Pdfm pdfmController
     SwingBuilder swingBuilder
 
@@ -38,7 +43,11 @@ class PdfmGui {
             searchBox: null,
             searchButton: null,
             scrollablePdfList: null,
+            selectedItemPanel: null,
+            openButton: null,
     ]
+
+    def selectedItem = ""
 
     PdfmGui() {
 
@@ -52,13 +61,13 @@ class PdfmGui {
             gui.mainWindow = frame(title: APP_TITLE, location: DEFAULT_GUI_LOCATION, size: DEFAULT_GUI_SIZE, defaultCloseOperation: EXIT_ON_CLOSE) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        gui.refreshButton = button( new Button('Refresh'), actionPerformed: { refreshFileList() })
-                        glue()
-                        gui.searchBox = textField(text: '', font: textBoxFont, minimumSize: SEARCH_BOX_SIZE, preferredSize: SEARCH_BOX_SIZE, maximumSize: SEARCH_BOX_SIZE)
-                        hstrut(COMPONENT_SPACING)
-                        gui.searchButton = button( new Button('Search'), actionPerformed: { refreshFileList() })
-                    }
+                        hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                            gui.refreshButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
+                            glue()
+                            gui.searchBox = textField(text: '', font: textBoxFont, minimumSize: SEARCH_BOX_SIZE, preferredSize: SEARCH_BOX_SIZE, maximumSize: SEARCH_BOX_SIZE)
+                            hstrut(COMPONENT_SPACING)
+                            gui.searchButton = button(new Button('Search'), actionPerformed: { refreshFileList() })
+                        }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: DEFAULT_GUI_SIZE) {
                         gui.scrollablePdfList = scrollPane(
                                 verticalScrollBar: scrollBar(
@@ -73,7 +82,7 @@ class PdfmGui {
                         hstrut(COMPONENT_SPACING)
                         button(new Button('Send'), actionPerformed: { sendPdfToRemarkable() })
                         hstrut(COMPONENT_SPACING)
-                        button(new Button('Open'), actionPerformed: { openPdf() })
+                        gui.openButton = button(new Button('Open'), enabled: false, actionPerformed: { openPdf() })
                     }
                 }
             }
@@ -86,17 +95,50 @@ class PdfmGui {
         def pdfDomainObjects = pdfmController.getListOfPdfs()
         swingBuilder.edt {
             scrollablePdfListContents = vbox() {
+                //def objCount = 0
                 pdfDomainObjects.each { pdfDomainObj ->
-                    hbox(border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1)) {
-                        hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                            hstrut(COMPONENT_SPACING)
-                            button(new Button('Open'), actionPerformed: { openPdf(pdfDomainObj.fileName) })
-                            hstrut(COMPONENT_SPACING * 2)
-                            label(new Label(pdfDomainObj.fileName), font: pdfTitleFont)
+                    //objCount++
+                    def panelId = "panel" + pdfDomainObj.id
+                    hbox(background: Color.BLUE, alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                            boxLayout(axis: BoxLayout.Y_AXIS)
+                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                                hstrut(COMPONENT_SPACING * 2)
+                                label(new Label(pdfDomainObj.fileName), font: pdfTitleFont)
+                            }
                         }
                     }
+
+//                    if (objCount % 2 == 0) {
+//                        gui.selectedItemPanel.setBackground(EVEN_ITEM_COLOR)
+//                        //println gui.selectedItemPanel.getBackground().getAlpha()
+//                    } else {
+//                        gui.selectedItemPanel.setBackground(ODD_ITEM_COLOR)
+//                        //println gui.selectedItemPanel.getBackground().getAlpha()
+//                    }
+
+                    gui.selectedItemPanel.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                            if (selectedItem == panelId) {
+                                swingBuilder."$panelId".setBackground(Color.WHITE)
+                                selectedItem = ""
+                                gui.openButton.setEnabled(false)
+                            } else {
+                                if (selectedItem != "") {
+                                    swingBuilder."$selectedItem".setBackground(Color.WHITE)
+                                    selectedItem = ""
+                                    gui.openButton.setEnabled(false)
+                                }
+                                swingBuilder."$panelId".setBackground(SELECTED_ITEM_COLOR)
+                                selectedItem = panelId
+                                gui.openButton.setEnabled(true)
+                            }
+                        }
+                    })
                 }
             }
+
             gui.scrollablePdfList.setViewportView(scrollablePdfListContents)
         }
     }
@@ -109,11 +151,8 @@ class PdfmGui {
         logInfo('TODO send PDF to Remarkable2')
     }
 
-    def openPdf(pdf) {
-        logInfo("Opening: " + pdf)
-        File pdfFile = new File(pdfmController.pdfConfig.getProperty('storageFolder') + pdf)
-        Desktop dt = Desktop.getDesktop()
-        dt.open(pdfFile)
+    def openPdf() {
+        pdfmController.openPdfById(selectedItem.replace('panel','').toInteger())
     }
 
     static void main(String[] args) {

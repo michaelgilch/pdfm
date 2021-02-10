@@ -1,5 +1,6 @@
 package PDFManager
 
+import java.awt.Desktop
 import java.security.MessageDigest
 
 // allow references to logInfo() rather than LogHelper.logInfo()
@@ -133,5 +134,15 @@ class Pdfm {
             pdfList = PdfData.list()
         }
         return pdfList
+    }
+
+    def openPdfById(int pdfId) {
+        PdfData.withNewSession {
+            def pdf = PdfData.findById(pdfId)
+            logInfo("Opening: " + pdf.fileName)
+            File pdfFile = new File(pdfConfig.getProperty('storageFolder') + pdf.fileName)
+            Desktop dt = Desktop.getDesktop()
+            dt.open(pdfFile)
+        }
     }
 }

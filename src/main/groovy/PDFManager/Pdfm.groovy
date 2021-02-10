@@ -126,4 +126,12 @@ class Pdfm {
             }
         }
     }
+
+    def getListOfPdfs() {
+        def pdfList = []
+        PdfData.withNewSession {
+            pdfList = PdfData.list()
+        }
+        return pdfList
+    }
 }

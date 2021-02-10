@@ -11,6 +11,7 @@ import static java.awt.Component.CENTER_ALIGNMENT
 
 import java.awt.*
 
+import static java.awt.Component.LEFT_ALIGNMENT
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE
 import javax.swing.*
 
@@ -19,16 +20,17 @@ class PdfmGui {
     static int DEFAULT_GUI_WIDTH = 1200
     static int DEFAULT_GUI_HEIGHT = 600
     static def DEFAULT_GUI_LOCATION = [150, 150]
-    static def DEFAULT_GUI_SIZE = [DEFAULT_GUI_WIDTH, DEFAULT_GUI_HEIGHT]
+    static Dimension DEFAULT_GUI_SIZE = new Dimension(DEFAULT_GUI_WIDTH, DEFAULT_GUI_HEIGHT)
 
     static int COMPONENT_SPACING = 5
     static int STANDARD_HBOX_HEIGHT = 50
-    static def STANDARD_BUTTON_SIZE = [100, 30]
     static def SEARCH_BOX_SIZE = [250, 30]
 
+    Pdfm pdfmController
     SwingBuilder swingBuilder
 
     static Font textBoxFont = new Font('Arial', Font.BOLD, 12)
+    static Font pdfTitleFont = new Font('Arial', Font.BOLD, 12)
 
     def gui = [
             mainWindow: null,
@@ -39,10 +41,14 @@ class PdfmGui {
     ]
 
     PdfmGui() {
+
+        pdfmController = new Pdfm()
+
         swingBuilder = new SwingBuilder()
 
         swingBuilder.build {
-            lookAndFeel("nimbus")
+            //lookAndFeel(UIManager.getSystemLookAndFeelClassName())
+            lookAndFeel('nimbus')
             gui.mainWindow = frame(title: APP_TITLE, location: DEFAULT_GUI_LOCATION, size: DEFAULT_GUI_SIZE, defaultCloseOperation: EXIT_ON_CLOSE) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
@@ -72,11 +78,27 @@ class PdfmGui {
                 }
             }
         }
+        refreshFileList()
         gui.mainWindow.setVisible(true)
     }
 
     def refreshFileList() {
-        logInfo('TODO refresh file list')
+        //logInfo('TODO refresh file list')
+        def pdfDomainObjects = pdfmController.getListOfPdfs()
+        //logInfo(pdfDomainObjects)
+        swingBuilder.edt {
+            scrollablePdfListContents = vbox() {
+                pdfDomainObjects.each { pdfDomainObj ->
+                    hbox(border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1)) {
+                        hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                            hstrut(COMPONENT_SPACING)
+                            label(new Label(pdfDomainObj.fileName), font: pdfTitleFont, maximumSize: DEFAULT_GUI_SIZE)
+                        }
+                    }
+                }
+            }
+            gui.scrollablePdfList.setViewportView(scrollablePdfListContents)
+        }
     }
 
     def editPdfAttributes() {
@@ -93,6 +115,6 @@ class PdfmGui {
 
     static void main(String[] args) {
         new PdfmGui()
-        def pdfmController = new Pdfm()
+
     }
 }

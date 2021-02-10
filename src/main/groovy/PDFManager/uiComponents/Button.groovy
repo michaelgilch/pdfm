@@ -11,7 +11,7 @@ class Button extends JButton implements PropertyChangeListener {
     static int STANDARD_HEIGHT = 30
     static Dimension BUTTON_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 
-    Button() { this("")}
+    //Button() { this("")}
 
     Button(String text) {
         super(text)

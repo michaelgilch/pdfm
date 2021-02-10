@@ -7,7 +7,7 @@ import java.beans.PropertyChangeListener
 
 class Button extends JButton implements PropertyChangeListener {
 
-    static int STANDARD_WIDTH = 100
+    static int STANDARD_WIDTH = 75
     static int STANDARD_HEIGHT = 30
     static Dimension BUTTON_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 
@@ -17,8 +17,8 @@ class Button extends JButton implements PropertyChangeListener {
         super(text)
         addPropertyChangeListener(this)
         setMinimumSize(BUTTON_SIZE)
-        setPreferredSize(BUTTON_SIZE)
-        setMaximumSize(BUTTON_SIZE)
+        //setPreferredSize(BUTTON_SIZE)
+        //setMaximumSize(BUTTON_SIZE)
     }
 
     void propertyChange(PropertyChangeEvent evt) {

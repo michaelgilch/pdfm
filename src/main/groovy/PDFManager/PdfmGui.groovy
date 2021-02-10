@@ -83,16 +83,16 @@ class PdfmGui {
     }
 
     def refreshFileList() {
-        //logInfo('TODO refresh file list')
         def pdfDomainObjects = pdfmController.getListOfPdfs()
-        //logInfo(pdfDomainObjects)
         swingBuilder.edt {
             scrollablePdfListContents = vbox() {
                 pdfDomainObjects.each { pdfDomainObj ->
                     hbox(border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1)) {
                         hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                             hstrut(COMPONENT_SPACING)
-                            label(new Label(pdfDomainObj.fileName), font: pdfTitleFont, maximumSize: DEFAULT_GUI_SIZE)
+                            button(new Button('Open'), actionPerformed: { openPdf(pdfDomainObj.fileName) })
+                            hstrut(COMPONENT_SPACING * 2)
+                            label(new Label(pdfDomainObj.fileName), font: pdfTitleFont)
                         }
                     }
                 }
@@ -109,8 +109,11 @@ class PdfmGui {
         logInfo('TODO send PDF to Remarkable2')
     }
 
-    def openPdf() {
-        logInfo('TODO open PDF')
+    def openPdf(pdf) {
+        logInfo("Opening: " + pdf)
+        File pdfFile = new File(pdfmController.pdfConfig.getProperty('storageFolder') + pdf)
+        Desktop dt = Desktop.getDesktop()
+        dt.open(pdfFile)
     }
 
     static void main(String[] args) {

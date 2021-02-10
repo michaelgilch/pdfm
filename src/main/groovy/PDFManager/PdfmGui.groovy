@@ -1,5 +1,6 @@
 package PDFManager
 
+import PDFManager.domain.PdfData
 import PDFManager.uiComponents.*
 
 // allow references to logInfo() rather than LogHelper.logInfo()
@@ -36,6 +37,7 @@ class PdfmGui {
 
     static Font textBoxFont = new Font('Arial', Font.BOLD, 12)
     static Font pdfTitleFont = new Font('Arial', Font.BOLD, 12)
+    static Font labelFont = new Font('Arial', Font.PLAIN, 12)
 
     def gui = [
             mainWindow: null,
@@ -45,6 +47,17 @@ class PdfmGui {
             scrollablePdfList: null,
             selectedItemPanel: null,
             openButton: null,
+            editButton: null,
+            editDialog: null,
+            cancelButton: null,
+            saveButton: null,
+            displayNameField: null,
+            tagField: null,
+            typeField: null,
+            categoryField: null,
+            authorField: null,
+            publisherField: null,
+            yearField: null,
     ]
 
     def selectedItem = ""
@@ -78,9 +91,9 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
-                        button(new Button('Edit'), actionPerformed: { editPdfAttributes() })
+                        gui.editButton = button(new Button('Edit'), enabled: false, actionPerformed: { editPdfAttributes() })
                         hstrut(COMPONENT_SPACING)
-                        button(new Button('Send'), actionPerformed: { sendPdfToRemarkable() })
+                        gui.sendButton = button(new Button('Send'), enabled: false, actionPerformed: { sendPdfToRemarkable() })
                         hstrut(COMPONENT_SPACING)
                         gui.openButton = button(new Button('Open'), enabled: false, actionPerformed: { openPdf() })
                     }
@@ -121,23 +134,34 @@ class PdfmGui {
                         @Override
                         public void mousePressed(MouseEvent e) {
                             if (selectedItem == panelId) {
-                                swingBuilder."$panelId".setBackground(Color.WHITE)
+                                swingBuilder."$selectedItem".setBackground(Color.WHITE)
                                 selectedItem = ""
                                 gui.openButton.setEnabled(false)
+                                gui.editButton.setEnabled(false)
+                                gui.sendButton.setEnabled(false)
                             } else {
                                 if (selectedItem != "") {
                                     swingBuilder."$selectedItem".setBackground(Color.WHITE)
                                     selectedItem = ""
                                     gui.openButton.setEnabled(false)
+                                    gui.editButton.setEnabled(false)
+                                    gui.sendButton.setEnabled(false)
                                 }
                                 swingBuilder."$panelId".setBackground(SELECTED_ITEM_COLOR)
                                 selectedItem = panelId
                                 gui.openButton.setEnabled(true)
+                                gui.editButton.setEnabled(true)
+                                gui.sendButton.setEnabled(true)
                             }
                         }
                     })
                 }
             }
+
+            // retain selection on refresh
+//            if (selectedItem != "") {
+//                swingBuilder."$selectedItem".setBackground(SELECTED_ITEM_COLOR)
+//            }
 
             gui.scrollablePdfList.setViewportView(scrollablePdfListContents)
         }
@@ -145,6 +169,50 @@ class PdfmGui {
 
     def editPdfAttributes() {
         logInfo('TODO edit PDF attributes')
+        def selectedId = selectedItem.replace('panel', '').toInteger()
+        PdfData pdf = pdfmController.getPdfObject(selectedId)
+        swingBuilder.edt {
+            gui.editDialog = frame(title: 'Edit', location: [250, 250], size: [800, 325]) {
+                panel(border: emptyBorder(COMPONENT_SPACING)) {
+                    boxLayout(axis: BoxLayout.Y_AXIS)
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        label(new Label(pdf.fileName), font: pdfTitleFont)
+                       glue()
+                    }
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Display Name:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.displayNameField = textField(font: textBoxFont, text: pdf.descriptiveName, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                    }
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Type:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.typeField = textField(font: textBoxFont, text: '<TYPE>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        glue()
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Category:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.categoryField = textField(font: textBoxFont, text: '<CATEGORY>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                    }
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Author:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.authorField = textField(font: textBoxFont, text: '<AUTHOR>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        glue()
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Publisher:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.publisherField = textField(font: textBoxFont, text: '<PUBLISHER>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        glue()
+                        label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Year:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
+                        gui.yearField = textField(font: textBoxFont, text: '<YEAR>', minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
+                    }
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
+                        label(horizontalAlignment: JLabel.RIGHT, verticalAlignment: JLabel.TOP, font: labelFont, text: 'Tags:  ', minimumSize: [100, 90], preferredSize: [100, 90], maximumSize: [100, 90])
+                        gui.tagField = textArea(wrapStyleWord: true, lineWrap: true, editable: true, font: textBoxFont, text: '', preferredSize: [DEFAULT_GUI_WIDTH, 90], maximumSize: [DEFAULT_GUI_WIDTH, 90], border: lineBorder(color: Color.GRAY, thickness: 1))
+                    }
+                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                        gui.cancelButton = button(new Button('Cancel'), actionPerformed: { closeDialog(gui.editDialog) })
+                        glue()
+                        gui.saveButton = button(new Button('Save'), actionPerformed: { saveAttributeChanges() })
+                    }
+                }
+            }
+        }
+        gui.editDialog.setVisible(true)
     }
 
     def sendPdfToRemarkable() {
@@ -153,6 +221,18 @@ class PdfmGui {
 
     def openPdf() {
         pdfmController.openPdfById(selectedItem.replace('panel','').toInteger())
+    }
+
+    def closeDialog(dialog) {
+        swingBuilder.edt {
+            dialog.setVisible(false)
+            dialog.dispose()
+        }
+    }
+
+    def saveAttributeChanges() {
+        logInfo('TODO save changes')
+        closeDialog(gui.editDialog)
     }
 
     static void main(String[] args) {

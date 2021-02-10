@@ -145,4 +145,11 @@ class Pdfm {
             dt.open(pdfFile)
         }
     }
+
+    PdfData getPdfObject(int pdfId) {
+        PdfData.withNewSession {
+            def pdf = PdfData.findById(pdfId)
+            return pdf
+        }
+    }
 }

@@ -30,6 +30,15 @@ class Button extends JButton implements PropertyChangeListener {
         setMinimumSize(BUTTON_SIZE)
     }
 
+    Button(String text, java.awt.Dimension newSize) {
+        super(text)
+        addPropertyChangeListener(this)
+        setFont(buttonFont)
+        setMinimumSize(newSize)
+        setPreferredSize(newSize)
+        setMaximumSize(newSize)
+    }
+
     void propertyChange(PropertyChangeEvent evt) {
 
     }

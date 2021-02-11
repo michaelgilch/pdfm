@@ -27,10 +27,24 @@ class Label extends JLabel implements PropertyChangeListener {
     Label(String text) {
         super(text)
         addPropertyChangeListener(this)
-        setMinimumSize(LABEL_SIZE)
         setFont(labelFont)
-        //setPreferredSize(LABEL_SIZE)
-        //setMaximumSize(LABEL_SIZE)
+        setMinimumSize(LABEL_SIZE)
+    }
+
+    Label(String text, Dimension newSize) {
+        super(text)
+        addPropertyChangeListener(this)
+        setFont(labelFont)
+        setMinimumSize(newSize)
+        setPreferredSize(newSize)
+        setMaximumSize(newSize)
+    }
+
+    Label(String text, Font newFont) {
+        super(text)
+        addPropertyChangeListener(this)
+        setFont(newFont)
+        setMinimumSize(LABEL_SIZE)
     }
 
     void propertyChange(PropertyChangeEvent evt) {

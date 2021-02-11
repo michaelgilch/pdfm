@@ -35,9 +35,12 @@ class PdfmGui {
     Pdfm pdfmController
     SwingBuilder swingBuilder
 
-    static Font textBoxFont = new Font('DejaVu Sans', Font.BOLD, 12)
-    static Font pdfTitleFont = new Font('DejaVu Sans', Font.BOLD, 14)
-    static Font labelFont = new Font('DejaVu Sans', Font.PLAIN, 14)
+//    static Font textBoxFont = new Font('DejaVu Sans', Font.BOLD, 12)
+//    static Font pdfTitleFont = new Font('DejaVu Sans', Font.BOLD, 14)
+//    static Font labelFont = new Font('DejaVu Sans', Font.PLAIN, 14)
+    static Font textBoxFont
+    static Font labelFont
+    static Font pdfTitleFont
 
     def gui = [
             mainWindow: null,
@@ -65,6 +68,8 @@ class PdfmGui {
     PdfmGui() {
 
         pdfmController = new Pdfm()
+
+        setupFonts()
 
         swingBuilder = new SwingBuilder()
 
@@ -104,6 +109,14 @@ class PdfmGui {
         gui.mainWindow.setVisible(true)
     }
 
+    def setupFonts() {
+        String fontFace = pdfmController.pdfConfig.getProperty('fontFace')
+        int fontSize = pdfmController.pdfConfig.getProperty('fontSize').toInteger()
+        textBoxFont = new Font(fontFace, Font.BOLD, fontSize)
+        labelFont = new Font(fontFace, Font.PLAIN, fontSize)
+        pdfTitleFont = new Font(fontFace, Font.BOLD, fontSize)
+    }
+
     def refreshFileList() {
         def pdfDomainObjects = pdfmController.getListOfPdfs()
         swingBuilder.edt {
@@ -133,14 +146,15 @@ class PdfmGui {
                                     if (pdfDomainObj.year != "" || pdfDomainObj.year == null) {
                                         authPubYearLine += pdfDomainObj.year
                                     }
-                                    //label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
-                                    //label(new Label("Author: ${pdfDomainObj.author}, Publisher: ${pdfDomainObj.publisher}"), font:labelFont)
+
                                     label(new Label(authPubYearLine), font:labelFont)
                                 }
                                 glue()
                                 vbox() {
-                                    label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
-                                    label(new Label(pdfDomainObj.tags), font: labelFont)
+                                    //label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
+                                    label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category))
+                                    //label(new Label(pdfDomainObj.tags), font: labelFont)
+                                    label(new Label(pdfDomainObj.tags))
                                 }
                             }
                         }

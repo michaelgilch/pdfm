@@ -9,13 +9,22 @@ class PdfConfig {
 
     static Map defaultConfig = [
             'databaseSource':'jdbc:h2:file:./db/pdfm',
-            'storageFolder':'/home/michael/pdfStore/',
             'filesystemRefreshTimer':'0',
+            'fontFace':'DejaVu Sans',
+            'fontSize':'12',
+            'storageFolder':'/home/michael/pdfStore/',
+
     ]
 
     Properties propertiesToUse = null
 
-    PdfConfig(File config) {
+    private static final INSTANCE = new PdfConfig()
+
+    static getInstance() { return INSTANCE }
+
+    private PdfConfig() { }
+
+    def setConfigFile(File config) {
         configFile = config
         Properties defaultProperties = loadDefaultConfigProperties()
         Properties userProperties = loadUserConfigProperties()
@@ -45,6 +54,37 @@ class PdfConfig {
             saveConfigProperties(propertiesToUse)
         }
     }
+
+//    PdfConfig(File config) {
+//        configFile = config
+//        Properties defaultProperties = loadDefaultConfigProperties()
+//        Properties userProperties = loadUserConfigProperties()
+//        propertiesToUse = new Properties()
+//
+//        if (userProperties.isEmpty()) {
+//            propertiesToUse = defaultProperties
+//        } else {
+//            def userProperty = null
+//            defaultProperties.each { defaultProperty ->
+//                if (!userProperties.containsKey(defaultProperty.getKey())) {
+//                    logInfo("config file does not contain key: " + defaultProperty)
+//                    propertiesToUse << defaultProperty
+//                } else if (userProperties.containsKey(defaultProperty.getKey())) {
+//                    userProperty = userProperties.getProperty(defaultProperty.getKey())
+//                    if (userProperty.value != defaultProperty.getValue()) {
+//                        propertiesToUse << defaultProperty
+//                        propertiesToUse.setProperty(defaultProperty.getKey(), userProperty)
+//                    }
+//                } else {
+//                    propertiesToUse << defaultProperty
+//                }
+//            }
+//        }
+//        if (userProperties != propertiesToUse) {
+//            logInfo("Updating configuration with missing or invalid settings")
+//            saveConfigProperties(propertiesToUse)
+//        }
+//    }
 
     Properties getConfigProperties() {
         return propertiesToUse

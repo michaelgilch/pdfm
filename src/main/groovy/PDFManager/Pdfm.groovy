@@ -1,15 +1,15 @@
 package PDFManager
 
-import groovy.sql.Sql
-
-import java.awt.Desktop
-import java.security.MessageDigest
-
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static PDFManager.utils.LogHelper.*
 import PDFManager.domain.PdfData
 import PDFManager.utils.PdfConfig
 
+import groovy.sql.Sql
+
+import java.awt.Desktop
+
+import java.security.MessageDigest
 import org.grails.orm.hibernate.HibernateDatastore
 
 class Pdfm {
@@ -36,7 +36,9 @@ class Pdfm {
 
     def runPdfmController(String pathToConfig) {
         logInfo("Fetching configuration...")
-        PdfConfig pc = new PdfConfig(new File(pathToConfig))
+        //PdfConfig pc = new PdfConfig(new File(pathToConfig))
+        PdfConfig pc = new PdfConfig().getInstance()
+        pc.setConfigFile(new File(pathToConfig))
         pdfConfig = pc.getConfigProperties()
 
         hibernateDatastore = initializeAppDatabase()

@@ -32,15 +32,15 @@ class PdfmGui {
     //static Color ODD_ITEM_COLOR = new Color(0,0,0,16)
     static Color SELECTED_ITEM_COLOR = new Color(0, 185, 255, 128)
 
-    Pdfm pdfmController
-    SwingBuilder swingBuilder
-
-//    static Font textBoxFont = new Font('DejaVu Sans', Font.BOLD, 12)
-//    static Font pdfTitleFont = new Font('DejaVu Sans', Font.BOLD, 14)
-//    static Font labelFont = new Font('DejaVu Sans', Font.PLAIN, 14)
     static Font textBoxFont
     static Font labelFont
     static Font pdfTitleFont
+
+    static def TYPE_ITEMS = ['', 'Book', 'Manual', 'Cheat Sheet']
+    static def CATEGORY_ITEMS = ['', 'computer science', 'philosophy', 'productivity']
+
+    Pdfm pdfmController
+    SwingBuilder swingBuilder
 
     def gui = [
             mainWindow: null,
@@ -66,7 +66,6 @@ class PdfmGui {
     def selectedItem = ""
 
     PdfmGui() {
-
         pdfmController = new Pdfm()
 
         setupFonts()
@@ -147,13 +146,11 @@ class PdfmGui {
                                         authPubYearLine += pdfDomainObj.year
                                     }
 
-                                    label(new Label(authPubYearLine), font:labelFont)
+                                    label(new Label(authPubYearLine))
                                 }
                                 glue()
                                 vbox() {
-                                    //label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category), font:labelFont)
                                     label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category))
-                                    //label(new Label(pdfDomainObj.tags), font: labelFont)
                                     label(new Label(pdfDomainObj.tags))
                                 }
                             }
@@ -223,10 +220,12 @@ class PdfmGui {
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Type:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
                         //gui.typeField = textField(font: textBoxFont, text: '<TYPE>', preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
-                        gui.typeField = comboBox(font: textBoxFont, items: ['', 'Book', 'Manual', 'CheatSheet'], selectedItem: pdf.type, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        //gui.typeField = comboBox(font: textBoxFont, items: ['', 'Book', 'Manual', 'CheatSheet'], selectedItem: pdf.type, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.typeField = comboBox(new ComboBox(TYPE_ITEMS), selectedItem: pdf.type)
                         glue()
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Category:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])
-                        gui.categoryField = comboBox(font: textBoxFont, items: ['', 'computer science', 'philosophy', 'productivity'], selectedItem: pdf.category, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        //gui.categoryField = comboBox(font: textBoxFont, items: ['', 'computer science', 'philosophy', 'productivity'], selectedItem: pdf.category, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.categoryField = comboBox(new ComboBox(CATEGORY_ITEMS), selectedItem: pdf.category)
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(horizontalAlignment: JLabel.RIGHT, font: labelFont, text: 'Author:  ', minimumSize: [100, 30], preferredSize: [100, 30], maximumSize: [100, 30])

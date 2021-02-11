@@ -3,6 +3,9 @@ package PDFManager.utils
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static LogHelper.*
 
+/**
+ * Singleton Class for managing application configuration properties.
+ */
 class PdfConfig {
 
     static File configFile
@@ -20,9 +23,12 @@ class PdfConfig {
 
     private static final INSTANCE = new PdfConfig()
 
-    static getInstance() { return INSTANCE }
+    static getInstance() {
+        return INSTANCE
+    }
 
-    private PdfConfig() { }
+    private PdfConfig() {
+    }
 
     def setConfigFile(File config) {
         configFile = config
@@ -54,37 +60,6 @@ class PdfConfig {
             saveConfigProperties(propertiesToUse)
         }
     }
-
-//    PdfConfig(File config) {
-//        configFile = config
-//        Properties defaultProperties = loadDefaultConfigProperties()
-//        Properties userProperties = loadUserConfigProperties()
-//        propertiesToUse = new Properties()
-//
-//        if (userProperties.isEmpty()) {
-//            propertiesToUse = defaultProperties
-//        } else {
-//            def userProperty = null
-//            defaultProperties.each { defaultProperty ->
-//                if (!userProperties.containsKey(defaultProperty.getKey())) {
-//                    logInfo("config file does not contain key: " + defaultProperty)
-//                    propertiesToUse << defaultProperty
-//                } else if (userProperties.containsKey(defaultProperty.getKey())) {
-//                    userProperty = userProperties.getProperty(defaultProperty.getKey())
-//                    if (userProperty.value != defaultProperty.getValue()) {
-//                        propertiesToUse << defaultProperty
-//                        propertiesToUse.setProperty(defaultProperty.getKey(), userProperty)
-//                    }
-//                } else {
-//                    propertiesToUse << defaultProperty
-//                }
-//            }
-//        }
-//        if (userProperties != propertiesToUse) {
-//            logInfo("Updating configuration with missing or invalid settings")
-//            saveConfigProperties(propertiesToUse)
-//        }
-//    }
 
     Properties getConfigProperties() {
         return propertiesToUse

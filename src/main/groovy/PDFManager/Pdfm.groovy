@@ -35,9 +35,7 @@ class Pdfm {
     }
 
     def runPdfmController(String pathToConfig) {
-        logInfo("Fetching configuration...")
-        //PdfConfig pc = new PdfConfig(new File(pathToConfig))
-        PdfConfig pc = new PdfConfig().getInstance()
+        PdfConfig pc = PdfConfig.getInstance()
         pc.setConfigFile(new File(pathToConfig))
         pdfConfig = pc.getConfigProperties()
 

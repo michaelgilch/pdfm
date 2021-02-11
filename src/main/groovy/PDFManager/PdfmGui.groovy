@@ -3,6 +3,9 @@ package PDFManager
 import PDFManager.domain.PdfData
 import PDFManager.uiComponents.*
 
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static PDFManager.utils.LogHelper.*
 
@@ -81,7 +84,7 @@ class PdfmGui {
                         hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                             gui.refreshButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
                             glue()
-                            gui.searchBox = textField(text: '', font: textBoxFont, minimumSize: SEARCH_BOX_SIZE, preferredSize: SEARCH_BOX_SIZE, maximumSize: SEARCH_BOX_SIZE)
+                            gui.searchBox = textField(new TextField('', new Dimension(250,30)))
                             hstrut(COMPONENT_SPACING)
                             gui.searchButton = button(new Button('Search'), actionPerformed: { refreshFileList() })
                         }
@@ -206,7 +209,7 @@ class PdfmGui {
         def selectedId = selectedItem.replace('panel', '').toInteger()
         PdfData pdf = pdfmController.getPdfObject(selectedId)
         swingBuilder.edt {
-            gui.editDialog = frame(title: 'Edit', location: [250, 250], size: [800, 325]) {
+            gui.editDialog = frame(title: 'Edit', location: [250, 250], size: [800, 325], alwaysOnTop: true) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
@@ -215,7 +218,7 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(new Label('Display:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
-                        gui.displayNameField = textField(font: textBoxFont, text: pdf.descriptiveName, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.displayNameField = textField(new TextField(pdf.descriptiveName, new Dimension(DEFAULT_GUI_WIDTH * 2, 30)))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(new Label('Type:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
@@ -226,13 +229,13 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         label(new Label('Author:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
-                        gui.authorField = textField(font: textBoxFont, text: pdf.author, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.authorField = textField(new TextField(pdf.author))
                         glue()
                         label(new Label('Publisher:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
-                        gui.publisherField = textField(font: textBoxFont, text: pdf.publisher, preferredSize: [DEFAULT_GUI_WIDTH, 30], maximumSize: [DEFAULT_GUI_WIDTH, 30])
+                        gui.publisherField = textField(new TextField(pdf.publisher))
                         glue()
                         label(new Label('Year:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
-                        gui.yearField = textField(font: textBoxFont, text: pdf.year, minimumSize: [75, 30], preferredSize: [75, 30], maximumSize: [75, 30])
+                        gui.yearField = textField(new TextField(pdf.year, new Dimension(75, 30)))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
                         label(new Label('Tags:  ', new Dimension(100, 90)), horizontalAlignment: JLabel.RIGHT)
@@ -245,7 +248,19 @@ class PdfmGui {
                     }
                 }
             }
+
         }
+
+        // Main Window is disabled when dialog is open, and re-enabled when dialog is closed through closeDialog
+        // Closing via the System Menu (X) is supported here, so that we are not locked out of the main window.
+        gui.editDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            void windowClosing(WindowEvent e) {
+                closeDialog(gui.editDialog)
+            }
+        })
+
+        gui.mainWindow.setEnabled(false)
         gui.editDialog.setVisible(true)
     }
 
@@ -261,6 +276,7 @@ class PdfmGui {
         swingBuilder.edt {
             dialog.setVisible(false)
             dialog.dispose()
+            gui.mainWindow.setEnabled(true)
         }
     }
 

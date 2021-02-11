@@ -3,11 +3,11 @@ package PDFManager
 import PDFManager.domain.PdfData
 import PDFManager.uiComponents.*
 
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
-
 // allow references to logInfo() rather than LogHelper.logInfo()
 import static PDFManager.utils.LogHelper.*
+
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 import groovy.swing.SwingBuilder
 
@@ -45,6 +45,9 @@ class PdfmGui {
     Pdfm pdfmController
     SwingBuilder swingBuilder
 
+    def categoryFilterModel = new DefaultListModel()
+    def tagFilterModel = new DefaultListModel()
+
     def gui = [
             mainWindow: null,
             refreshButton: null,
@@ -64,6 +67,8 @@ class PdfmGui {
             authorField: null,
             publisherField: null,
             yearField: null,
+            filterPane: null,
+            tagList: null,
     ]
 
     def selectedItem = ""
@@ -95,6 +100,14 @@ class PdfmGui {
                                         unitIncrement: 20
                                 )
                         )
+                        hstrut(COMPONENT_SPACING * 2)
+                        gui.filterPane = scrollPane(border: emptyBorder(COMPONENT_SPACING), minimumSize: [200, 100], preferredSize: [200, DEFAULT_GUI_HEIGHT * 2], maximumSize: [200, DEFAULT_GUI_HEIGHT * 2],
+                                verticalScrollBar: scrollBar(
+                                        blockIncrement: 20,
+                                        unitIncrement: 20
+                                )
+                        )
+
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
@@ -107,9 +120,22 @@ class PdfmGui {
                 }
             }
         }
+
+//        gui.mainWindow.addComponentListener(new ComponentAdapter() {
+//            @Override
+//            public void componentResized(ComponentEvent e) {
+//                Component c = (Component)e.getSource()
+//                println("Size: " + c.getWidth() + " x " + c.getHeight())
+//            }
+//        })
+
         refreshFileList()
+        buildFilterPane()
         gui.mainWindow.setVisible(true)
+        refreshFilterPane()
     }
+
+
 
     def setupFonts() {
         String fontFace = pdfmController.pdfConfig.getProperty('fontFace')
@@ -119,10 +145,49 @@ class PdfmGui {
         pdfTitleFont = new Font(fontFace, Font.BOLD, fontSize)
     }
 
+    def refreshFilterPane() {
+        //tagFilterModel = pdfmController.getTagList()
+        //Collection tagList = Collections.list(tagFilterModel.elements())
+
+        //Collections.sort(tagList)
+        tagFilterModel.clear()
+
+        pdfmController.getTagList().each { tag ->
+            //if (!tagFilterModel.contains(tag)) {
+                tagFilterModel.addElement(tag)
+            //}
+
+        }
+
+    }
+
+    def buildFilterPane() {
+        //def tagModel = new DefaultListModel()
+//        tagFilterModel.addElement('this')
+//        tagFilterModel.addElement('is a test')
+//        def tagListData = ['this', 'is', 'a test of', 'a list box']
+
+        swingBuilder.edt {
+            def filterPaneContents = vbox() {
+                    label(new Label('Filter By Tag'), alignmentX: LEFT_ALIGNMENT)
+
+                    //gui.tagList = list(items: tagListData, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
+                    //gui.tagList = list(new List(tagListData)) //items: tagListData, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
+                    gui.tagList = list(new ListBox(tagFilterModel)) //, selectedItem: '')
+                    vstrut(10)
+                    label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
+                    //gui.categoryList = list(items:['computer science', 'philosophy', 'productivity'], alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
+                    //gui.categoryList = list(new List(['computer science', 'philosophy', 'productivity'])) //, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
+            }
+            gui.filterPane.setViewportView(filterPaneContents)
+        }
+
+    }
+
     def refreshFileList() {
         def pdfDomainObjects = pdfmController.getListOfPdfs()
         swingBuilder.edt {
-            scrollablePdfListContents = vbox() {
+            def scrollablePdfListContents = vbox() {
                 //def objCount = 0
                 pdfDomainObjects.each { pdfDomainObj ->
                     //objCount++
@@ -139,13 +204,13 @@ class PdfmGui {
                                         label(new Label(pdfDomainObj.descriptiveName, pdfTitleFont))
                                     }
                                     def authPubYearLine = ""
-                                    if (pdfDomainObj.publisher != "") {
+                                    if (pdfDomainObj.publisher != "" && pdfDomainObj.publisher != null) {
                                         authPubYearLine += (pdfDomainObj.publisher + " - ")
                                     }
-                                    if (pdfDomainObj.author != "" || pdfDomainObj.author == null) {
+                                    if (pdfDomainObj.author != "" && pdfDomainObj.author != null) {
                                         authPubYearLine += (pdfDomainObj.author + " - ")
                                     }
-                                    if (pdfDomainObj.year != "" || pdfDomainObj.year == null) {
+                                    if (pdfDomainObj.year != "" && pdfDomainObj.year != null) {
                                         authPubYearLine += pdfDomainObj.year
                                     }
 
@@ -176,20 +241,20 @@ class PdfmGui {
                                 selectedItem = ""
                                 gui.openButton.setEnabled(false)
                                 gui.editButton.setEnabled(false)
-                                gui.sendButton.setEnabled(false)
+                                //gui.sendButton.setEnabled(false)
                             } else {
                                 if (selectedItem != "") {
                                     swingBuilder."$selectedItem".setBackground(Color.WHITE)
                                     selectedItem = ""
                                     gui.openButton.setEnabled(false)
                                     gui.editButton.setEnabled(false)
-                                    gui.sendButton.setEnabled(false)
+                                    //gui.sendButton.setEnabled(false)
                                 }
                                 swingBuilder."$panelId".setBackground(SELECTED_ITEM_COLOR)
                                 selectedItem = panelId
                                 gui.openButton.setEnabled(true)
                                 gui.editButton.setEnabled(true)
-                                gui.sendButton.setEnabled(true)
+                                //gui.sendButton.setEnabled(true)
                             }
                         }
                     })
@@ -203,6 +268,8 @@ class PdfmGui {
 
             gui.scrollablePdfList.setViewportView(scrollablePdfListContents)
         }
+
+        refreshFilterPane()
     }
 
     def editPdfAttributes() {
@@ -281,7 +348,6 @@ class PdfmGui {
     }
 
     def saveAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags) {
-        logInfo('TODO save changes')
         pdfmController.savePdfAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags)
         closeDialog(gui.editDialog)
         refreshFileList()

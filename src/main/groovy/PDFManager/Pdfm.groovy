@@ -55,6 +55,30 @@ class Pdfm {
                 startDirectoryScanningThread()
             }
         }
+
+
+    }
+
+    def getTagList() {
+        def allTags = []
+        PdfData.withNewSession {
+            PdfData.withTransaction {
+                println PdfData.count
+                PdfData.list().each { pdf ->
+                    if (pdf.tags != "" && pdf.tags != null) {
+                        def pdfTags = pdf.tags.split(',')
+                        pdfTags.each {
+                            //def isInList = it.trim() in allTags
+                            if (!(it.trim() in allTags)) {
+                                allTags += it.trim()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //println allTags.sort()
+        return allTags.sort()
     }
 
     def createFileStorageDirIfNeeded() {
@@ -164,6 +188,7 @@ class Pdfm {
                 logError("Sub-Directories are not checked: " + absoluteFilename)
             }
         }
+        getTagList()
     }
 
     def generateMD5(File file) {
@@ -213,7 +238,7 @@ class Pdfm {
                 pdf.author = author
                 pdf.publisher = publisher
                 pdf.year = year
-                pdf.tags = tags
+                pdf.tags = tags.toLowerCase()
                 pdf.save(failOnError: true, flush: true)
             }
         }

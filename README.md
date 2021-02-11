@@ -7,6 +7,19 @@ PDFM will one day be a PDF Manager. I have a large library of PDF files includin
 
 The idea is to have a single folder containing all of my PDFs with a GUI to categorize, tag, and search. Fundamentally, a file browser for PDFs with tagging.
 
+# Configuration
+
+The following configuration settings are available in conf/config.properties:
+
+| Setting | Description | Default | Options |
+| -------- | ----------- | -------- | -------- |
+| databaseSource | Location of the H2 Database | jdbc:h2:file:./db/pdfm | |
+| filesystemRefreshTimer | How often the storage directory should be scanned for changes, in minutes | 0 (manual only) | Positive Integer |
+| fontFace | Font face | DejaVu Sans | Any system font |
+| fontSize | Font size | 12 | Positive Integer |
+| storageFolder | Location of PDF Files | /home/michael/pdfStore/ | Absolute path to folder on system |
+
+
 # What I want to be when I grow up
 
 - A single folder will contain all of my PDF files, which I index.
@@ -30,6 +43,3 @@ The idea is to have a single folder containing all of my PDFs with a GUI to cate
 - Swing for UI
 - SLF4J with logback for logging
 - JUnit4 for testing
-
-
-

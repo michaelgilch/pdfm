@@ -146,42 +146,23 @@ class PdfmGui {
     }
 
     def refreshFilterPane() {
-        //tagFilterModel = pdfmController.getTagList()
-        //Collection tagList = Collections.list(tagFilterModel.elements())
-
-        //Collections.sort(tagList)
         tagFilterModel.clear()
-
         pdfmController.getTagList().each { tag ->
-            //if (!tagFilterModel.contains(tag)) {
-                tagFilterModel.addElement(tag)
-            //}
-
+            tagFilterModel.addElement(tag)
         }
-
     }
 
     def buildFilterPane() {
-        //def tagModel = new DefaultListModel()
-//        tagFilterModel.addElement('this')
-//        tagFilterModel.addElement('is a test')
-//        def tagListData = ['this', 'is', 'a test of', 'a list box']
-
         swingBuilder.edt {
             def filterPaneContents = vbox() {
-                    label(new Label('Filter By Tag'), alignmentX: LEFT_ALIGNMENT)
-
-                    //gui.tagList = list(items: tagListData, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
-                    //gui.tagList = list(new List(tagListData)) //items: tagListData, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
-                    gui.tagList = list(new ListBox(tagFilterModel)) //, selectedItem: '')
-                    vstrut(10)
-                    label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
-                    //gui.categoryList = list(items:['computer science', 'philosophy', 'productivity'], alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
-                    //gui.categoryList = list(new List(['computer science', 'philosophy', 'productivity'])) //, alignmentX: LEFT_ALIGNMENT, minimumSize: [200, 200], maximumSize: [200, 200], border: lineBorder(color: Color.GRAY, thickness: 1))
+                label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
+                gui.categoryList = list(new ListBox(categoryFilterModel))
+                vstrut(10)
+                label(new Label('Filter By Tag'), alignmentX: LEFT_ALIGNMENT)
+                gui.tagList = list(new ListBox(tagFilterModel))
             }
             gui.filterPane.setViewportView(filterPaneContents)
         }
-
     }
 
     def refreshFileList() {
@@ -355,6 +336,5 @@ class PdfmGui {
 
     static void main(String[] args) {
         new PdfmGui()
-
     }
 }

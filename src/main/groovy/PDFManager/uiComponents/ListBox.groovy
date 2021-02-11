@@ -4,8 +4,10 @@ import PDFManager.utils.PdfConfig
 
 import javax.swing.DefaultListModel
 import javax.swing.JList
+import javax.swing.border.LineBorder
 import java.awt.Dimension
 import java.awt.Font
+import java.awt.Color
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
@@ -22,25 +24,18 @@ class ListBox extends JList implements PropertyChangeListener {
     static {
         config = PdfConfig.getInstance()
         configProperties = config.getConfigProperties()
-        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.BOLD, configProperties.getProperty('fontSize').toInteger())
+        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger())
     }
 
     ListBox(items) {
-        //def listItems = new DefaultListModel()
         super(items)
-
-//        items.each { item ->
-//            listItems.addElement(item)
-//        }
-//
-        //this.add('AGAIN')
-        println items.toString()
-//        items.each { item ->
-//            this.add(item)
-//        }
         addPropertyChangeListener(this)
         setFont(textBoxFont)
         setMinimumSize(LIST_BOX_SIZE)
+        setPreferredSize(LIST_BOX_SIZE)
+        setMaximumSize(LIST_BOX_SIZE)
+        setBorder(new LineBorder(Color.GRAY, 1))
+        setAlignmentX(LEFT_ALIGNMENT)
     }
 
     void propertyChange(PropertyChangeEvent evt) {

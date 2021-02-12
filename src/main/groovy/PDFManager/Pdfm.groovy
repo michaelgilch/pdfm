@@ -16,7 +16,8 @@ class Pdfm {
 
     static def DATABASE_SCHEMA_VERSION_V100 = 1000
     static def DATABASE_SCHEMA_VERSION_V101 = 1001
-    static def CURRENT_DATABASE_SCHEMA_VERSION = DATABASE_SCHEMA_VERSION_V101
+    static def DATABASE_SCHEMA_VERSION_V102 = 1002
+    static def CURRENT_DATABASE_SCHEMA_VERSION = DATABASE_SCHEMA_VERSION_V102
 
     Properties pdfConfig
     HibernateDatastore hibernateDatastore
@@ -135,6 +136,13 @@ class Pdfm {
             }
 
             if (databaseSchemaVersion == DATABASE_SCHEMA_VERSION_V101) {
+                initialDatabaseSchemaVersion = DATABASE_SCHEMA_VERSION_V101
+                logInfo("Upgrading database from ${databaseSchemaVersion}")
+                sql.execute("alter table PDF_DATA add column ISBN varchar(24) default ''")
+                databaseSchemaVersion = DATABASE_SCHEMA_VERSION_V102
+            }
+
+            if (databaseSchemaVersion == DATABASE_SCHEMA_VERSION_V102) {
                 // TODO upgrade to next version
             }
 
@@ -231,6 +239,7 @@ class Pdfm {
             PdfData.withTransaction {
                 pdf.descriptiveName = attributes.descriptiveName
                 pdf.type = attributes.type
+                pdf.isbn = attributes.isbn
                 pdf.category = attributes.category
                 pdf.author = attributes.author
                 pdf.publisher = attributes.publisher

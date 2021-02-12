@@ -66,6 +66,7 @@ class PdfmGui {
             categoryField: null,
             authorField: null,
             publisherField: null,
+            isbnField: null,
             yearField: null,
             filterPane: null,
             tagList: null,
@@ -196,9 +197,14 @@ class PdfmGui {
                                     label(new Label(authPubYearLine))
                                 }
                                 glue()
-                                vbox() {
-                                    label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.category))
-                                    label(new Label(pdfDomainObj.tags))
+                                vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50),border: lineBorder(color: Color.RED, thickness: 1)) {
+                                    if (pdfDomainObj.type == "Book") {
+                                        label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 10)))
+                                    } else {
+                                        label(new Label(pdfDomainObj.type, new Font('DejaVu Sans', Font.PLAIN, 10)))
+                                    }
+                                    label(new Label(pdfDomainObj.category, new Font('DejaVu Sans', Font.BOLD, 10)))
+                                    label(new Label(pdfDomainObj.tags, new Font('DejaVu Sans', Font.PLAIN, 10)))
                                 }
                             }
                         }
@@ -270,6 +276,9 @@ class PdfmGui {
                         label(new Label('Type:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
                         gui.typeField = comboBox(new ComboBox(TYPE_ITEMS), selectedItem: pdf.type)
                         glue()
+                        label(new Label('ISBN:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        gui.isbnField = textField(new TextField(pdf.isbn))
+                        glue()
                         label(new Label('Category:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
                         gui.categoryField = comboBox(new ComboBox(CATEGORY_ITEMS), selectedItem: pdf.category)
                     }
@@ -294,6 +303,7 @@ class PdfmGui {
                             Map attributesToSave = [
                                     'descriptiveName': gui.displayNameField.getText(),
                                     'type': gui.typeField.getSelectedItem(),
+                                    'isbn': gui.isbnField.getText(),
                                     'category':gui.categoryField.getSelectedItem(),
                                     'author': gui.authorField.getText(),
                                     'publisher': gui.publisherField.getText(),

@@ -16,6 +16,7 @@ class PdfData implements GormEntity<PdfData>, Serializable {
     String descriptiveName
     String author
     String publisher
+    String isbn
     String year
     String category
     String type
@@ -25,6 +26,7 @@ class PdfData implements GormEntity<PdfData>, Serializable {
         descriptiveName nullable: true, blank: true
         author nullable: true, blank: true
         publisher nullable: true, blank: true
+        isbn nullable: true, blank: true
         year nullable: true, blank: true
         category nullable: true, blank: true
         type nullable: true, blank: true

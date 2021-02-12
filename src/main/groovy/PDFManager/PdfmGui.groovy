@@ -292,7 +292,18 @@ class PdfmGui {
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         gui.cancelButton = button(new Button('Cancel'), actionPerformed: { closeDialog(gui.editDialog) })
                         glue()
-                        gui.saveButton = button(new Button('Save'), actionPerformed: { saveAttributeChanges(pdf, gui.displayNameField.getText(), gui.typeField.getSelectedItem(), gui.categoryField.getSelectedItem(), gui.authorField.getText(), gui.publisherField.getText(), gui.yearField.getText(), gui.tagField.getText()) })
+                        gui.saveButton = button(new Button('Save'), actionPerformed: {
+                            Map attributesToSave = [
+                                    'descriptiveName': gui.displayNameField.getText(),
+                                    'type': gui.typeField.getSelectedItem(),
+                                    'category':gui.categoryField.getSelectedItem(),
+                                    'author': gui.authorField.getText(),
+                                    'publisher': gui.publisherField.getText(),
+                                    'year': gui.yearField.getText(),
+                                    'tags': gui.tagField.getText(),
+                            ]
+                            saveAttributeChanges(pdf, attributesToSave)
+                        })
                     }
                 }
             }
@@ -328,8 +339,8 @@ class PdfmGui {
         }
     }
 
-    def saveAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags) {
-        pdfmController.savePdfAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags)
+    def saveAttributeChanges(pdf, attributes) {
+        pdfmController.savePdfAttributeChanges(pdf, attributes)
         closeDialog(gui.editDialog)
         refreshFileList()
     }

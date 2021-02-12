@@ -68,7 +68,6 @@ class Pdfm {
                     if (pdf.tags != "" && pdf.tags != null) {
                         def pdfTags = pdf.tags.split(',')
                         pdfTags.each {
-                            //def isInList = it.trim() in allTags
                             if (!(it.trim() in allTags)) {
                                 allTags += it.trim()
                             }
@@ -229,17 +228,21 @@ class Pdfm {
         }
     }
 
-    def savePdfAttributeChanges(pdf, displayName, type, category, author, publisher, year, tags) {
+    def savePdfAttributeChanges(pdf, attributes) {
         PdfData.withNewSession {
             PdfData.withTransaction {
-                pdf.descriptiveName = displayName
-                pdf.type = type
-                pdf.category = category
-                pdf.author = author
-                pdf.publisher = publisher
-                pdf.year = year
-                pdf.tags = tags.toLowerCase()
-                pdf.save(failOnError: true, flush: true)
+                pdf.descriptiveName = attributes.descriptiveName
+                pdf.type = attributes.type
+                pdf.category = attributes.category
+                pdf.author = attributes.author
+                pdf.publisher = attributes.publisher
+                pdf.year = attributes.year
+                pdf.tags = attributes.tags.toLowerCase()
+                try {
+                    pdf.save(failOnError: true, flush: true)
+                } catch (Exception e) {
+                    logError("Failed to save attribute changes for $pdf.fileName", e)
+                }
             }
         }
     }

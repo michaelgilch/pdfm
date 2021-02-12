@@ -135,8 +135,6 @@ class PdfmGui {
         refreshFilterPane()
     }
 
-
-
     def setupFonts() {
         String fontFace = pdfmController.pdfConfig.getProperty('fontFace')
         int fontSize = pdfmController.pdfConfig.getProperty('fontSize').toInteger()

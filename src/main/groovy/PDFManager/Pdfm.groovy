@@ -63,7 +63,6 @@ class Pdfm {
         def allTags = []
         PdfData.withNewSession {
             PdfData.withTransaction {
-                println PdfData.count
                 PdfData.list().each { pdf ->
                     if (pdf.tags != "" && pdf.tags != null) {
                         def pdfTags = pdf.tags.split(',')
@@ -76,7 +75,6 @@ class Pdfm {
                 }
             }
         }
-        //println allTags.sort()
         return allTags.sort()
     }
 
@@ -90,7 +88,7 @@ class Pdfm {
     }
 
     def initializeAppDatabase() {
-        upgradeDatabase()
+        upgradeDatabaseIfNecessary()
         logInfo("Initializing the database...")
         Map databaseConfig = [
                 'dataSource.dbCreate':'update', // implies 'create'
@@ -101,7 +99,7 @@ class Pdfm {
         return new HibernateDatastore(databaseConfig, domainClassPackage)
     }
 
-    def upgradeDatabase() {
+    def upgradeDatabaseIfNecessary() {
         logInfo('Start: Upgrade database if required.')
         def sql
         def databaseUrl = pdfConfig.getProperty('databaseSource')
@@ -203,7 +201,7 @@ class Pdfm {
         logInfo("Start")
         while (keepRunning) {
             while (!debugPauseDirectoryScanningFile.exists()) {
-                logInfo("Checking for Changes")
+                logInfo("Checking filesystem for Changes")
                 checkFilesystemForChanges()
                 Thread.sleep(1000 * 60 * fsRefreshInterval)
             }

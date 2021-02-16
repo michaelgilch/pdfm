@@ -13,7 +13,7 @@ import java.beans.PropertyChangeListener
 
 class ListBox extends JList implements PropertyChangeListener {
 
-    static int STANDARD_WIDTH = 200
+    static int STANDARD_WIDTH = 180
     static int STANDARD_HEIGHT = 200
     static Dimension LIST_BOX_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 
@@ -24,7 +24,7 @@ class ListBox extends JList implements PropertyChangeListener {
     static {
         config = PdfConfig.getInstance()
         configProperties = config.getConfigProperties()
-        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger())
+        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger() - 1)
     }
 
     ListBox(items) {
@@ -37,6 +37,18 @@ class ListBox extends JList implements PropertyChangeListener {
         setBorder(new LineBorder(Color.GRAY, 1))
         setAlignmentX(LEFT_ALIGNMENT)
     }
+
+    ListBox(items, newSize) {
+        super(items)
+        addPropertyChangeListener(this)
+        setFont(textBoxFont)
+        setMinimumSize(newSize)
+        setPreferredSize(newSize)
+        setMaximumSize(newSize)
+        setBorder(new LineBorder(Color.GRAY, 1))
+        setAlignmentX(LEFT_ALIGNMENT)
+    }
+
 
     void propertyChange(PropertyChangeEvent evt) {
         // no-op

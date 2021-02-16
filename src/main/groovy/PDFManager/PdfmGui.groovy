@@ -70,6 +70,8 @@ class PdfmGui {
             yearField: null,
             filterPane: null,
             tagList: null,
+            clearFilterButton: null,
+            refreshFilterButton: null,
     ]
 
     def selectedItem = ""
@@ -102,13 +104,22 @@ class PdfmGui {
                                 )
                         )
                         hstrut(COMPONENT_SPACING * 2)
-                        gui.filterPane = scrollPane(border: emptyBorder(COMPONENT_SPACING), minimumSize: [200, 100], preferredSize: [200, DEFAULT_GUI_HEIGHT * 2], maximumSize: [200, DEFAULT_GUI_HEIGHT * 2],
-                                verticalScrollBar: scrollBar(
-                                        blockIncrement: 20,
-                                        unitIncrement: 20
-                                )
-                        )
-
+                        vbox() {
+                            label(new Label('Filter By Tag'), alignmentX: CENTER_ALIGNMENT)
+                            gui.tagFilter = scrollPane(border: emptyBorder(2), minimumSize: [200, 50], preferredSize: [200, 50], maximumSize: [200, DEFAULT_GUI_HEIGHT],
+                                    verticalScrollBar: scrollBar(
+                                            border: lineBorder(color: Color.GRAY, thickness: 1),
+                                            blockIncrement: 20,
+                                            unitIncrement: 20,
+                                    )
+                            )
+                            gui.tagFilter.setViewportView(gui.tagList = list(new ListBox(tagFilterModel)))
+                            hbox(alignmentX: CENTER_ALIGNMENT, maximumSize: new Dimension(200, 50)) {
+                                gui.clearFilterButton = button(new Button('Clear', new Dimension(90, 30)), actionPerformed: { clearFilters() })
+                                glue()
+                                gui.refreshFilterButton = button(new Button('Refresh', new Dimension(90, 30)), actionPerformed: { println 'TODO: Refresh Main List' })
+                            }
+                        }
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
@@ -121,7 +132,6 @@ class PdfmGui {
                 }
             }
         }
-
 //        gui.mainWindow.addComponentListener(new ComponentAdapter() {
 //            @Override
 //            public void componentResized(ComponentEvent e) {
@@ -131,7 +141,7 @@ class PdfmGui {
 //        })
 
         refreshFileList()
-        buildFilterPane()
+        //buildFilterPane()
         gui.mainWindow.setVisible(true)
         refreshFilterPane()
     }
@@ -154,14 +164,25 @@ class PdfmGui {
     def buildFilterPane() {
         swingBuilder.edt {
             def filterPaneContents = vbox() {
-                label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
-                gui.categoryList = list(new ListBox(categoryFilterModel))
-                vstrut(10)
+//                label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
+//                gui.categoryList = list(new ListBox(categoryFilterModel))
+//                vstrut(10)
                 label(new Label('Filter By Tag'), alignmentX: LEFT_ALIGNMENT)
                 gui.tagList = list(new ListBox(tagFilterModel))
+                hbox(alignmentX: LEFT_ALIGNMENT, maximumSize: new Dimension(200, 50)) {
+                    gui.clearFilterButton = button(new Button('Clear'), actionPerformed: { clearFilters() })
+                    glue()
+                    gui.refreshFilterButton = button(new Button('Refresh'), actionPerformed: { println 'TODO: Refresh Main List' })
+                }
+
             }
             gui.filterPane.setViewportView(filterPaneContents)
         }
+    }
+
+    def clearFilters() {
+        gui.tagList.clearSelection()
+        refreshFileList()
     }
 
     def refreshFileList() {
@@ -197,7 +218,8 @@ class PdfmGui {
                                     label(new Label(authPubYearLine))
                                 }
                                 glue()
-                                vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50),border: lineBorder(color: Color.RED, thickness: 1)) {
+                                //vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50), border: lineBorder(color: Color.RED, thickness: 1)) {
+                                vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50)) {
                                     if (pdfDomainObj.type == "Book") {
                                         label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 10)))
                                     } else {

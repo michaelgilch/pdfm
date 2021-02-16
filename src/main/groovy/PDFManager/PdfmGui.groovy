@@ -117,7 +117,7 @@ class PdfmGui {
                             hbox(alignmentX: CENTER_ALIGNMENT, maximumSize: new Dimension(200, 50)) {
                                 gui.clearFilterButton = button(new Button('Clear', new Dimension(90, 30)), actionPerformed: { clearFilters() })
                                 glue()
-                                gui.refreshFilterButton = button(new Button('Refresh', new Dimension(90, 30)), actionPerformed: { println 'TODO: Refresh Main List' })
+                                gui.refreshFilterButton = button(new Button('Refresh', new Dimension(90, 30)), actionPerformed: { refreshFileList() })
                             }
                         }
                     }
@@ -161,32 +161,16 @@ class PdfmGui {
         }
     }
 
-    def buildFilterPane() {
-        swingBuilder.edt {
-            def filterPaneContents = vbox() {
-//                label(new Label('Filter By Category'), alignmentX: LEFT_ALIGNMENT)
-//                gui.categoryList = list(new ListBox(categoryFilterModel))
-//                vstrut(10)
-                label(new Label('Filter By Tag'), alignmentX: LEFT_ALIGNMENT)
-                gui.tagList = list(new ListBox(tagFilterModel))
-                hbox(alignmentX: LEFT_ALIGNMENT, maximumSize: new Dimension(200, 50)) {
-                    gui.clearFilterButton = button(new Button('Clear'), actionPerformed: { clearFilters() })
-                    glue()
-                    gui.refreshFilterButton = button(new Button('Refresh'), actionPerformed: { println 'TODO: Refresh Main List' })
-                }
-
-            }
-            gui.filterPane.setViewportView(filterPaneContents)
-        }
-    }
-
     def clearFilters() {
         gui.tagList.clearSelection()
         refreshFileList()
     }
 
     def refreshFileList() {
-        def pdfDomainObjects = pdfmController.getListOfPdfs()
+        Map filter = [
+                'tags': gui.tagList.getSelectedValuesList(),
+        ]
+        def pdfDomainObjects = pdfmController.getFilteredListOfPdfs(filter)
         swingBuilder.edt {
             def scrollablePdfListContents = vbox() {
                 //def objCount = 0
@@ -276,7 +260,7 @@ class PdfmGui {
             gui.scrollablePdfList.setViewportView(scrollablePdfListContents)
         }
 
-        refreshFilterPane()
+        //refreshFilterPane()
     }
 
     def editPdfAttributes() {

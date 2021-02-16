@@ -10,6 +10,7 @@ import groovy.sql.Sql
 import java.awt.Desktop
 
 import java.security.MessageDigest
+
 import org.grails.orm.hibernate.HibernateDatastore
 
 class Pdfm {
@@ -56,8 +57,6 @@ class Pdfm {
                 startDirectoryScanningThread()
             }
         }
-
-
     }
 
     def getTagList() {
@@ -214,6 +213,26 @@ class Pdfm {
                 Thread.sleep(1000 * 60 * fsRefreshInterval)
             }
         }
+    }
+
+    def getFilteredListOfPdfs(Map filter) {
+        def pdfList = []
+            PdfData.withNewSession {
+                PdfData.list().each  { pdf ->
+                    def potentialMatch = true
+                    filter.tags.each {
+                        if (potentialMatch && pdf.tags.contains(it)) {
+                            // no-op: leave potentialMatch true and continue on
+                        } else {
+                            potentialMatch = false
+                        }
+                    }
+                    if (potentialMatch) {
+                        pdfList << pdf
+                    }
+                }
+            }
+        return pdfList
     }
 
     def getListOfPdfs() {

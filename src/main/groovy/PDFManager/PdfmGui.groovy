@@ -29,6 +29,7 @@ class PdfmGui {
 
     static int COMPONENT_SPACING = 5
     static int STANDARD_HBOX_HEIGHT = 50
+    static int PANEL_HBOX_HEIGHT = 75
     static def SEARCH_BOX_SIZE = [250, 30]
 
     //static Color EVEN_ITEM_COLOR = new Color(0, 0, 0, 0)
@@ -109,9 +110,9 @@ class PdfmGui {
                         )
                         hstrut(COMPONENT_SPACING * 2)
                         vbox() {
-                            label(new Label('Search:'), alignmentX: CENTER_ALIGNMENT)
+                            label(new Label('Search'), alignmentX: CENTER_ALIGNMENT)
                             gui.searchBox = textField(new TextField('', new Dimension(200,30)))
-                            vstrut(COMPONENT_SPACING)
+//                            vstrut(COMPONENT_SPACING)
                             label(new Label('Filter By Tag'), alignmentX: CENTER_ALIGNMENT)
                             gui.tagFilter = scrollPane(border: emptyBorder(2), minimumSize: [200, 50], preferredSize: [200, 50], maximumSize: [200, DEFAULT_GUI_HEIGHT],
                                     verticalScrollBar: scrollBar(
@@ -130,11 +131,12 @@ class PdfmGui {
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
-                        gui.editButton = button(new Button('Edit'), enabled: false, actionPerformed: { editPdfAttributes() })
-                        hstrut(COMPONENT_SPACING)
-                        gui.sendButton = button(new Button('Send'), enabled: false, actionPerformed: { sendPdfToRemarkable() })
-                        hstrut(COMPONENT_SPACING)
-                        gui.openButton = button(new Button('Open'), enabled: false, actionPerformed: { openPdf() })
+                        gui.editButton = button(new Button('Edit', new Dimension(100, 30)), enabled: false, actionPerformed: { editPdfAttributes() })
+                        hstrut(COMPONENT_SPACING * 2)
+                        gui.sendButton = button(new Button('Send', new Dimension(100, 30)), enabled: false, actionPerformed: { sendPdfToRemarkable() })
+                        hstrut(COMPONENT_SPACING * 2)
+                        gui.openButton = button(new Button('Open', new Dimension(100, 30)), enabled: false, actionPerformed: { openPdf() })
+                        glue()
                     }
                 }
             }
@@ -184,10 +186,10 @@ class PdfmGui {
                 pdfDomainObjects.each { pdfDomainObj ->
                     //objCount++
                     def panelId = "panel" + pdfDomainObj.id
-                    hbox(background: Color.BLUE, alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
-                        gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
+                    hbox(alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
+                        gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
                             boxLayout(axis: BoxLayout.Y_AXIS)
-                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
+                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
                                 hstrut(COMPONENT_SPACING * 2)
                                 vbox() {
                                     if (pdfDomainObj.descriptiveName == "") {

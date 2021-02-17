@@ -221,7 +221,7 @@ class Pdfm {
                 PdfData.list().each  { pdf ->
                     def potentialMatch = true
                     filter.tags.each {
-                        if (!(potentialMatch && pdf.tags.contains(it))) {
+                        if (pdf.tags == null || !(potentialMatch && pdf.tags.contains(it))) {
                             potentialMatch = false
                         }
                     }

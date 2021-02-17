@@ -57,9 +57,9 @@ class PdfmGui {
             selectedItemPanel: null,
             openButton: null,
             editButton: null,
+
+            // Edit Attributes Dialog
             editDialog: null,
-            cancelButton: null,
-            saveButton: null,
             displayNameField: null,
             tagField: null,
             typeField: null,
@@ -68,6 +68,10 @@ class PdfmGui {
             publisherField: null,
             isbnField: null,
             yearField: null,
+            cancelButton: null,
+            saveButton: null,
+
+            // Filter Pane
             filterPane: null,
             tagList: null,
             clearFilterButton: null,
@@ -89,13 +93,13 @@ class PdfmGui {
             gui.mainWindow = frame(title: APP_TITLE, location: DEFAULT_GUI_LOCATION, size: DEFAULT_GUI_SIZE, defaultCloseOperation: EXIT_ON_CLOSE) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
-                        hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                            gui.refreshButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
-                            glue()
-                            gui.searchBox = textField(new TextField('', new Dimension(250,30)))
-                            hstrut(COMPONENT_SPACING)
-                            gui.searchButton = button(new Button('Search'), actionPerformed: { refreshFileList() })
-                        }
+//                        hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+//                            gui.refreshButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
+//                            glue()
+//                            gui.searchBox = textField(new TextField('', new Dimension(250,30)))
+//                            hstrut(COMPONENT_SPACING)
+//                            gui.searchButton = button(new Button('Search'), actionPerformed: { refreshFileList() })
+//                        }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: DEFAULT_GUI_SIZE) {
                         gui.scrollablePdfList = scrollPane(
                                 verticalScrollBar: scrollBar(
@@ -105,6 +109,9 @@ class PdfmGui {
                         )
                         hstrut(COMPONENT_SPACING * 2)
                         vbox() {
+                            label(new Label('Search:'), alignmentX: CENTER_ALIGNMENT)
+                            gui.searchBox = textField(new TextField('', new Dimension(200,30)))
+                            vstrut(COMPONENT_SPACING)
                             label(new Label('Filter By Tag'), alignmentX: CENTER_ALIGNMENT)
                             gui.tagFilter = scrollPane(border: emptyBorder(2), minimumSize: [200, 50], preferredSize: [200, 50], maximumSize: [200, DEFAULT_GUI_HEIGHT],
                                     verticalScrollBar: scrollBar(
@@ -188,6 +195,7 @@ class PdfmGui {
                                     } else {
                                         label(new Label(pdfDomainObj.descriptiveName, pdfTitleFont))
                                     }
+                                    vstrut(COMPONENT_SPACING)
                                     def authPubYearLine = ""
                                     if (pdfDomainObj.publisher != "" && pdfDomainObj.publisher != null) {
                                         authPubYearLine += (pdfDomainObj.publisher + " - ")
@@ -205,12 +213,14 @@ class PdfmGui {
                                 //vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50), border: lineBorder(color: Color.RED, thickness: 1)) {
                                 vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50)) {
                                     if (pdfDomainObj.type == "Book") {
-                                        label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 10)))
+                                        label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                     } else {
-                                        label(new Label(pdfDomainObj.type, new Font('DejaVu Sans', Font.PLAIN, 10)))
+                                        label(new Label(pdfDomainObj.type, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                     }
-                                    label(new Label(pdfDomainObj.category, new Font('DejaVu Sans', Font.BOLD, 10)))
-                                    label(new Label(pdfDomainObj.tags, new Font('DejaVu Sans', Font.PLAIN, 10)))
+                                    vstrut(3)
+                                    label(new Label(pdfDomainObj.category, new Font('DejaVu Sans', Font.BOLD, 11)))
+                                    vstrut(3)
+                                    label(new Label(pdfDomainObj.tags, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                 }
                             }
                         }

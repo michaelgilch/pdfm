@@ -94,13 +94,6 @@ class PdfmGui {
             gui.mainWindow = frame(title: APP_TITLE, location: DEFAULT_GUI_LOCATION, size: DEFAULT_GUI_SIZE, defaultCloseOperation: EXIT_ON_CLOSE) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
-//                        hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-//                            gui.refreshButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
-//                            glue()
-//                            gui.searchBox = textField(new TextField('', new Dimension(250,30)))
-//                            hstrut(COMPONENT_SPACING)
-//                            gui.searchButton = button(new Button('Search'), actionPerformed: { refreshFileList() })
-//                        }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: DEFAULT_GUI_SIZE) {
                         gui.scrollablePdfList = scrollPane(
                                 verticalScrollBar: scrollBar(
@@ -112,7 +105,7 @@ class PdfmGui {
                         vbox() {
                             label(new Label('Search'), alignmentX: CENTER_ALIGNMENT)
                             gui.searchBox = textField(new TextField('', new Dimension(200,30)))
-//                            vstrut(COMPONENT_SPACING)
+                            label(' ')  // TODO vstrut was throwing off all spacing
                             label(new Label('Filter By Tag'), alignmentX: CENTER_ALIGNMENT)
                             gui.tagFilter = scrollPane(border: emptyBorder(2), minimumSize: [200, 50], preferredSize: [200, 50], maximumSize: [200, DEFAULT_GUI_HEIGHT],
                                     verticalScrollBar: scrollBar(
@@ -212,8 +205,7 @@ class PdfmGui {
                                     label(new Label(authPubYearLine))
                                 }
                                 glue()
-                                //vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50), border: lineBorder(color: Color.RED, thickness: 1)) {
-                                vbox(minimumSize: new Dimension(200, 50), preferredSize: new Dimension(200, 50),maximumSize: new Dimension(200, 50)) {
+                                vbox(minimumSize: new Dimension(200, 75), preferredSize: new Dimension(200, 75),maximumSize: new Dimension(200, 75)) {
                                     if (pdfDomainObj.type == "Book") {
                                         label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                     } else {

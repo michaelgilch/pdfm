@@ -11,7 +11,7 @@ import java.beans.PropertyChangeListener
 class TextField extends JTextField implements PropertyChangeListener {
 
     static int STANDARD_WIDTH = 100
-    static int STANDARD_HEIGHT = 30
+    static int STANDARD_HEIGHT = 25
     static Dimension TEXT_FIELD_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
     static PdfConfig config
     static Properties configProperties

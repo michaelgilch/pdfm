@@ -11,7 +11,7 @@ import java.beans.PropertyChangeListener
 class ComboBox extends JComboBox implements PropertyChangeListener {
 
     static int STANDARD_WIDTH = 200
-    static int STANDARD_HEIGHT = 30
+    static int STANDARD_HEIGHT = 25
     static Dimension COMBO_BOX_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 
     static PdfConfig config

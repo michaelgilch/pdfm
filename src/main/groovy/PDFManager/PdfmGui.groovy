@@ -17,10 +17,13 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.*
 
+import static java.awt.Component.TOP_ALIGNMENT
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE
+import javax.swing.border.EmptyBorder
 import javax.swing.*
 
 class PdfmGui {
+
     static String APP_TITLE = 'pdfm'
     static int DEFAULT_GUI_WIDTH = 1200
     static int DEFAULT_GUI_HEIGHT = 600
@@ -31,6 +34,19 @@ class PdfmGui {
     static int STANDARD_HBOX_HEIGHT = 50
     static int PANEL_HBOX_HEIGHT = 75
     static def SEARCH_BOX_SIZE = [250, 30]
+
+    static def MAIN_FRAME_PARAMS = [
+            title: APP_TITLE,
+            location: DEFAULT_GUI_LOCATION,
+            size: DEFAULT_GUI_SIZE,
+            defaultCloseOperation: EXIT_ON_CLOSE
+    ]
+
+    static def EDIT_FRAME_HBOX_PARAMS = [
+            alignmentX: CENTER_ALIGNMENT,
+            border: new EmptyBorder(5, 5, 5, 5),
+            maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]
+    ]
 
     //static Color EVEN_ITEM_COLOR = new Color(0, 0, 0, 0)
     //static Color ODD_ITEM_COLOR = new Color(0,0,0,16)
@@ -91,7 +107,7 @@ class PdfmGui {
         swingBuilder.build {
             //lookAndFeel(UIManager.getSystemLookAndFeelClassName())
             //lookAndFeel('nimbus')
-            gui.mainWindow = frame(title: APP_TITLE, location: DEFAULT_GUI_LOCATION, size: DEFAULT_GUI_SIZE, defaultCloseOperation: EXIT_ON_CLOSE) {
+            gui.mainWindow = frame(MAIN_FRAME_PARAMS) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: DEFAULT_GUI_SIZE) {
@@ -153,7 +169,7 @@ class PdfmGui {
         int fontSize = pdfmController.pdfConfig.getProperty('fontSize').toInteger()
         textBoxFont = new Font(fontFace, Font.BOLD, fontSize)
         labelFont = new Font(fontFace, Font.PLAIN, fontSize)
-        pdfTitleFont = new Font(fontFace, Font.BOLD, fontSize)
+        pdfTitleFont = new Font(fontFace, Font.BOLD, fontSize + 1)
     }
 
     def refreshFilterPane() {
@@ -182,15 +198,15 @@ class PdfmGui {
                     hbox(alignmentX: LEFT_ALIGNMENT, border: lineBorder(color: Color.LIGHT_GRAY, thickness: 1), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
                         gui.selectedItemPanel = panel(id: panelId, background: Color.WHITE, alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
                             boxLayout(axis: BoxLayout.Y_AXIS)
-                            hbox(alignmentX: LEFT_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), minimumSize: [DEFAULT_GUI_WIDTH, PANEL_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, PANEL_HBOX_HEIGHT]) {
+                            hbox() {
                                 hstrut(COMPONENT_SPACING * 2)
-                                vbox() {
+                                vbox(minimumSize: new Dimension(600, 75), preferredSize: new Dimension(600, 75)) {
                                     if (pdfDomainObj.descriptiveName == "") {
                                         label(new Label(pdfDomainObj.fileName, pdfTitleFont))
                                     } else {
                                         label(new Label(pdfDomainObj.descriptiveName, pdfTitleFont))
                                     }
-                                    vstrut(COMPONENT_SPACING)
+                                    vstrut(3)
                                     def authPubYearLine = ""
                                     if (pdfDomainObj.publisher != "" && pdfDomainObj.publisher != null) {
                                         authPubYearLine += (pdfDomainObj.publisher + " - ")
@@ -201,16 +217,18 @@ class PdfmGui {
                                     if (pdfDomainObj.year != "" && pdfDomainObj.year != null) {
                                         authPubYearLine += pdfDomainObj.year
                                     }
-
                                     label(new Label(authPubYearLine))
-                                }
-                                glue()
-                                vbox(minimumSize: new Dimension(200, 75), preferredSize: new Dimension(200, 75),maximumSize: new Dimension(200, 75)) {
+                                    vstrut(3)
                                     if (pdfDomainObj.type == "Book") {
                                         label(new Label(pdfDomainObj.type + ": " + pdfDomainObj.isbn, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                     } else {
                                         label(new Label(pdfDomainObj.type, new Font('DejaVu Sans', Font.PLAIN, 11)))
                                     }
+                                    glue()
+                                }
+                                glue()
+                                vbox(minimumSize: new Dimension(200, 75), preferredSize: new Dimension(200, 75),maximumSize: new Dimension(200, 75)) {
+
                                     vstrut(3)
                                     label(new Label(pdfDomainObj.category, new Font('DejaVu Sans', Font.BOLD, 11)))
                                     vstrut(3)
@@ -271,18 +289,18 @@ class PdfmGui {
         def selectedId = selectedItem.replace('panel', '').toInteger()
         PdfData pdf = pdfmController.getPdfObject(selectedId)
         swingBuilder.edt {
-            gui.editDialog = frame(title: 'Edit', location: [250, 250], size: [800, 325], alwaysOnTop: true) {
+            gui.editDialog = frame(title: 'Edit', location: [250, 250], size: [800, 325], alwaysOnTop: true, resizable: false) {
                 panel(border: emptyBorder(COMPONENT_SPACING)) {
                     boxLayout(axis: BoxLayout.Y_AXIS)
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         label(new Label(pdf.fileName, pdfTitleFont))
                         glue()
                     }
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         label(new Label('Display:  '), horizontalAlignment: JLabel.RIGHT)
-                        gui.displayNameField = textField(new TextField(pdf.descriptiveName, new Dimension(DEFAULT_GUI_WIDTH * 2, 30)))
+                        gui.displayNameField = textField(new TextField(pdf.descriptiveName))
                     }
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         label(new Label('Type:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.typeField = comboBox(new ComboBox(TYPE_ITEMS), selectedItem: pdf.type)
                         glue()
@@ -292,7 +310,7 @@ class PdfmGui {
                         label(new Label('Category:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.categoryField = comboBox(new ComboBox(CATEGORY_ITEMS), selectedItem: pdf.category)
                     }
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         label(new Label('Author:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.authorField = textField(new TextField(pdf.author))
                         glue()
@@ -302,11 +320,11 @@ class PdfmGui {
                         label(new Label('Year:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.yearField = textField(new TextField(pdf.year, new Dimension(75, 30)))
                     }
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         label(new Label('Tags:  '), horizontalAlignment: JLabel.RIGHT, )
                         gui.tagField = textArea(wrapStyleWord: true, lineWrap: true, editable: true, font: textBoxFont, text: pdf.tags, preferredSize: [DEFAULT_GUI_WIDTH, 90], maximumSize: [DEFAULT_GUI_WIDTH, 90], border: lineBorder(color: Color.GRAY, thickness: 1))
                     }
-                    hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
+                    hbox(EDIT_FRAME_HBOX_PARAMS) {
                         gui.cancelButton = button(new Button('Cancel'), actionPerformed: { closeDialog(gui.editDialog) })
                         glue()
                         gui.saveButton = button(new Button('Save'), actionPerformed: {

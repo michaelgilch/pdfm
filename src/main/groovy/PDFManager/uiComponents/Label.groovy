@@ -1,6 +1,7 @@
 package PDFManager.uiComponents
 
 import PDFManager.utils.PdfConfig
+import org.fusesource.jansi.Ansi
 
 import javax.swing.JLabel
 import java.awt.Dimension
@@ -11,7 +12,7 @@ import java.beans.PropertyChangeListener
 class Label extends JLabel implements PropertyChangeListener {
 
     static int STANDARD_WIDTH = 100
-    static int STANDARD_HEIGHT = 30
+    static int STANDARD_HEIGHT = 25
     static Dimension LABEL_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 
     static PdfConfig config
@@ -29,6 +30,7 @@ class Label extends JLabel implements PropertyChangeListener {
         addPropertyChangeListener(this)
         setFont(labelFont)
         setMinimumSize(LABEL_SIZE)
+        setPreferredSize(LABEL_SIZE)
     }
 
     Label(String text, Dimension newSize) {

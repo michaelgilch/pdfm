@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener
 
 class Label extends JLabel implements PropertyChangeListener {
 
-    static int STANDARD_WIDTH = 200
+    static int STANDARD_WIDTH = 100
     static int STANDARD_HEIGHT = 30
     static Dimension LABEL_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
 

@@ -116,19 +116,19 @@ class PdfmGui {
                             )
                             gui.tagFilter.setViewportView(gui.tagList = list(new ListBox(tagFilterModel)))
                             hbox(alignmentX: CENTER_ALIGNMENT, maximumSize: new Dimension(200, 50)) {
-                                gui.clearFilterButton = button(new Button('Clear', new Dimension(90, 30)), actionPerformed: { clearFilters() })
+                                gui.clearFilterButton = button(new Button('Clear'), actionPerformed: { clearFilters() })
                                 glue()
-                                gui.refreshFilterButton = button(new Button('Refresh', new Dimension(90, 30)), actionPerformed: { refreshFileList() })
+                                gui.refreshFilterButton = button(new Button('Refresh'), actionPerformed: { refreshFileList() })
                             }
                         }
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), preferredSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], minimumSize: [DEFAULT_GUI_WIDTH, STANDARD_HBOX_HEIGHT], maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
                         glue()
-                        gui.editButton = button(new Button('Edit', new Dimension(100, 30)), enabled: false, actionPerformed: { editPdfAttributes() })
+                        gui.editButton = button(new Button('Edit'), enabled: false, actionPerformed: { editPdfAttributes() })
                         hstrut(COMPONENT_SPACING * 2)
-                        gui.sendButton = button(new Button('Send', new Dimension(100, 30)), enabled: false, actionPerformed: { sendPdfToRemarkable() })
+                        gui.sendButton = button(new Button('Send'), enabled: false, actionPerformed: { sendPdfToRemarkable() })
                         hstrut(COMPONENT_SPACING * 2)
-                        gui.openButton = button(new Button('Open', new Dimension(100, 30)), enabled: false, actionPerformed: { openPdf() })
+                        gui.openButton = button(new Button('Open'), enabled: false, actionPerformed: { openPdf() })
                         glue()
                     }
                 }
@@ -279,31 +279,31 @@ class PdfmGui {
                         glue()
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        label(new Label('Display:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Display:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.displayNameField = textField(new TextField(pdf.descriptiveName, new Dimension(DEFAULT_GUI_WIDTH * 2, 30)))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        label(new Label('Type:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Type:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.typeField = comboBox(new ComboBox(TYPE_ITEMS), selectedItem: pdf.type)
                         glue()
-                        label(new Label('ISBN:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('ISBN:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.isbnField = textField(new TextField(pdf.isbn))
                         glue()
-                        label(new Label('Category:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Category:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.categoryField = comboBox(new ComboBox(CATEGORY_ITEMS), selectedItem: pdf.category)
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {
-                        label(new Label('Author:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Author:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.authorField = textField(new TextField(pdf.author))
                         glue()
-                        label(new Label('Publisher:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Publisher:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.publisherField = textField(new TextField(pdf.publisher))
                         glue()
-                        label(new Label('Year:  ', new Dimension(100, 30)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Year:  '), horizontalAlignment: JLabel.RIGHT)
                         gui.yearField = textField(new TextField(pdf.year, new Dimension(75, 30)))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT * 2]) {
-                        label(new Label('Tags:  ', new Dimension(100, 90)), horizontalAlignment: JLabel.RIGHT)
+                        label(new Label('Tags:  '), horizontalAlignment: JLabel.RIGHT, )
                         gui.tagField = textArea(wrapStyleWord: true, lineWrap: true, editable: true, font: textBoxFont, text: pdf.tags, preferredSize: [DEFAULT_GUI_WIDTH, 90], maximumSize: [DEFAULT_GUI_WIDTH, 90], border: lineBorder(color: Color.GRAY, thickness: 1))
                     }
                     hbox(alignmentX: CENTER_ALIGNMENT, border: emptyBorder(COMPONENT_SPACING), maximumSize: [DEFAULT_GUI_WIDTH * 2, STANDARD_HBOX_HEIGHT]) {

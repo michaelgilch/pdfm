@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener
 
 class Button extends JButton implements PropertyChangeListener {
 
-    static int STANDARD_WIDTH = 75
+    static int STANDARD_WIDTH = 100
     static int STANDARD_HEIGHT = 30
     static Dimension BUTTON_SIZE = new Dimension(STANDARD_WIDTH, STANDARD_HEIGHT)
     static PdfConfig config
@@ -20,7 +20,7 @@ class Button extends JButton implements PropertyChangeListener {
     static {
         config = PdfConfig.getInstance()
         configProperties = config.getConfigProperties()
-        buttonFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger()-2)
+        buttonFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger())
     }
 
     Button(String text) {

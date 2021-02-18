@@ -21,7 +21,7 @@ class ComboBox extends JComboBox implements PropertyChangeListener {
     static {
         config = PdfConfig.getInstance()
         configProperties = config.getConfigProperties()
-        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.BOLD, configProperties.getProperty('fontSize').toInteger())
+        textBoxFont = new Font(configProperties.getProperty('fontFace'), Font.PLAIN, configProperties.getProperty('fontSize').toInteger())
     }
 
     ComboBox(items) {

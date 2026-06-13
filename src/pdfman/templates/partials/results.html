@@ -1,0 +1,19 @@
+{% if pdfs %}
+  {% if view == "list" %}
+  <table class="pdf-list">
+    <thead>
+      <tr><th>Title</th><th>Author</th><th>Type</th><th>Year</th><th>Tags</th></tr>
+    </thead>
+    <tbody>
+      {% for p in pdfs %}{% include "partials/row.html" %}{% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="grid">
+    {% for p in pdfs %}{% include "partials/card.html" %}{% endfor %}
+  </div>
+  {% endif %}
+  <p class="count-line">{{ pdfs|length }} document{{ "s" if pdfs|length != 1 }}</p>
+{% else %}
+  <p class="empty">No documents match.</p>
+{% endif %}

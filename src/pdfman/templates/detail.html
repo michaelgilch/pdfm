@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }} · pdfman{% endblock %}
+{% block content %}
+<div class="detail">
+  <div class="preview">
+    <iframe src="/pdfs/{{ p.id }}/file" title="{{ p.title }}"></iframe>
+  </div>
+  <div class="meta" id="meta-panel">
+    {% include "partials/metadata.html" %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% if scan.status == "scanning" %}
+<div class="scan-banner scanning"
+     hx-get="/admin/scan-status" hx-trigger="every 1s" hx-swap="outerHTML" hx-target="this">
+  <span class="spinner"></span> Scanning library…
+</div>
+{% elif scan.report %}
+<div class="scan-banner done">
+  Scan complete: {{ scan.report.new }} new, {{ scan.report.renamed }} renamed,
+  {{ scan.report.duplicates }} duplicate, {{ scan.report.missing }} missing{% if scan.report.errors %},
+  {{ scan.report.errors|length }} error(s){% endif %}.
+  <span hidden hx-get="/pdfs" hx-target="#results" hx-trigger="load" hx-include="#filters"></span>
+</div>
+{% else %}
+<div class="scan-banner idle" hidden></div>
+{% endif %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <form id="filters"
+          hx-get="/pdfs"
+          hx-target="#results"
+          hx-trigger="change, keyup delay:300ms from:#searchbox">
+      <input type="hidden" name="view" id="view-input" value="{{ view }}">
+
+      <label class="field-label" for="searchbox">Search</label>
+      <input type="search" id="searchbox" name="q" value="{{ q }}"
+             placeholder="title, author, tag…" autocomplete="off">
+
+      {% if types %}
+      <h3>Type</h3>
+      {% for t in types %}
+      <label class="check">
+        <input type="checkbox" name="type" value="{{ t.type }}"
+               {% if t.type in sel_types %}checked{% endif %}>
+        {{ t.type }} <span class="count">{{ t.cnt }}</span>
+      </label>
+      {% endfor %}
+      {% endif %}
+
+      {% if tags %}
+      <h3>Tags</h3>
+      <div class="tag-filter">
+        {% for tg in tags %}
+        <label class="check">
+          <input type="checkbox" name="tag" value="{{ tg.name }}"
+                 {% if tg.name in sel_tags %}checked{% endif %}>
+          {{ tg.name }} <span class="count">{{ tg.cnt }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </form>
+  </aside>
+
+  <section class="content">
+    <div class="toolbar">
+      <div class="view-toggle">
+        <button type="button"
+                onclick="document.getElementById('view-input').value='grid'; htmx.trigger('#filters','change')">Grid</button>
+        <button type="button"
+                onclick="document.getElementById('view-input').value='list'; htmx.trigger('#filters','change')">List</button>
+      </div>
+      <form hx-post="/admin/rescan" hx-target="#scan-status" hx-swap="innerHTML">
+        <button type="submit" class="primary">Rescan library</button>
+      </form>
+    </div>
+
+    <div id="scan-status">{% include "partials/scan_status.html" %}</div>
+    <div id="results">{% include "partials/results.html" %}</div>
+  </section>
+</div>
+{% endblock %}

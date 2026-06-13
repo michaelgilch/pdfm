@@ -1,45 +1,70 @@
 # pdfm
 
-PDFM will one day be a PDF Manager. I have a large library of PDF files including books, manuals, cheat sheets, and documents. For years, I have struggled to keep them organized. 
-- Does a book about using Swing in Groovy go in a 'groovy' folder? 'swing' folder? 'java' folder? 
-- Does the Dymo Printer Manual go in a 'manuals' folder or 'printers' folder?
-- Does a cheatsheet on setting up a gitignore file for a gradle project go in 'gradle' or 'git'?
+A local-first web app to index, tag, search, and read a personal PDF library.
 
-The idea is to have a single folder containing all of my PDFs with a GUI to categorize, tag, and search. Fundamentally, a file browser for PDFs with tagging.
+I keep a large folder of PDFs (books, manuals, cheat sheets, papers). pdfm scans
+that folder, auto-extracts what it can from each file, and gives me a browser UI
+to browse covers, filter by tag/type, full-text search, edit metadata, and read
+PDFs inline. It runs entirely on `localhost` — nothing leaves the machine.
 
-# Configuration
+> This is a ground-up rewrite of the original 2021 Groovy/Swing/H2 app. That
+> version is preserved at the `archive/groovy-swing` git tag.
 
-The following configuration settings are available in conf/config.properties:
+## Features
 
-| Setting | Description | Default | Options |
-| -------- | ----------- | -------- | -------- |
-| databaseSource | Location of the H2 Database | jdbc:h2:file:./db/pdfm | |
-| filesystemRefreshTimer | How often the storage directory should be scanned for changes, in minutes | 0 (manual only) | Positive Integer |
-| fontFace | Font face | DejaVu Sans | Any system font |
-| fontSize | Font size | 12 | Positive Integer |
-| storageFolder | Location of PDF Files | /home/michael/pdfStore/ | Absolute path to folder on system |
+- **Folder scan with rename detection.** Files are fingerprinted by MD5, so moving
+  or renaming a PDF keeps its metadata instead of creating a duplicate record.
+- **Auto-seeded metadata.** Title and author are parsed from the filename
+  convention (`Title-With-Hyphens_Author.pdf`); page count and embedded
+  title/author/year are read with `pypdf`. You only edit the exceptions.
+- **Cover thumbnails** rendered with poppler's `pdftoppm`, cached by content hash.
+- **Tagging and faceted filtering** (normalized tags + type facets).
+- **Full-text search** over metadata via SQLite FTS5 (optionally over PDF text).
+- **In-browser reading** — PDFs open in the browser's native viewer; no external app.
+- **Duplicate and missing-file detection** surfaced after each scan.
 
+## Requirements
 
-# What I want to be when I grow up
+- Python 3.12+
+- [`uv`](https://docs.astral.sh/uv/)
+- `pdftoppm` (poppler-utils) on `PATH` — only needed for cover thumbnails
 
-- A single folder will contain all of my PDF files, which I index.
-- On command, and/or at set intervals (via user configuration), the folder will be scanned for changes (additions, deletions, renames).
-- The full list of PDFs will be displayed in a UI along with options to Open, Edit Attributes, Search, and maybe Send to Remarkable2.
-- Attributes will be stored for each PDF including:
-    - filename
-    - human readable filename (BW_Manual.pdf = Bob's Widget Manual)
-    - author
-    - publisher (if applicable)
-    - year
-    - type (book, manual, cheatsheet, etc)
-    - tags (groovy, gradle, java, c++, hibernate, etc)
-- There will be filters for specific attributes and search functionality.
+## Run
 
-# Technologies to consider
+```sh
+./run.sh           # starts the server and opens the browser
+# or
+uv run pdfman      # starts the server only
+```
 
-- Groovy
-- Gradle for building
-- Hibernate with H2 Database for storing attributes
-- Swing for UI
-- SLF4J with logback for logging
-- JUnit4 for testing
+Then open <http://127.0.0.1:8000>. `uv` creates the virtualenv and installs
+dependencies on first run.
+
+## Configuration
+
+Defaults work out of the box (library at `/data/pdf-library`). To change anything,
+copy `config.example.toml` to `config.toml` and edit. Every value can also be set
+via environment variables, e.g. `PDFMAN_LIBRARY__DIR=/some/path uv run pdfman`.
+
+| Section | Key | Default | Meaning |
+| --- | --- | --- | --- |
+| `library` | `dir` | `/data/pdf-library` | Folder containing the PDFs |
+| `library` | `recursive` | `true` | Also scan subfolders |
+| `scan` | `interval_minutes` | `0` | Auto-rescan interval (`0` = manual/on-startup only) |
+| `scan` | `on_startup` | `true` | Scan once when the server starts |
+| `server` | `host` / `port` | `127.0.0.1` / `8000` | Bind address |
+| `ui` | `default_view` | `grid` | `grid` or `list` |
+| `features` | `extract_fulltext` | `false` | Index PDF text for search (slower scans) |
+
+## Development
+
+```sh
+uv run pytest      # run the test suite
+```
+
+Runtime data (SQLite DB, thumbnail cache) lives under `data/` and is gitignored.
+
+## Stack
+
+FastAPI · stdlib `sqlite3` (+ FTS5) · Jinja2 · HTMX · pypdf · poppler. No ORM,
+no build step, no JavaScript framework.

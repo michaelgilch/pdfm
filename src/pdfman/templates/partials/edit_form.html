@@ -1,0 +1,41 @@
+<form class="edit-form" hx-put="/pdfs/{{ p.id }}"
+      hx-target="#meta-panel" hx-swap="innerHTML">
+  <label>Title
+    <input type="text" name="descriptive_name" value="{{ p.descriptive_name or '' }}">
+  </label>
+  <label>Author
+    <input type="text" name="author" value="{{ p.author or '' }}">
+  </label>
+  <label>Publisher
+    <input type="text" name="publisher" value="{{ p.publisher or '' }}">
+  </label>
+  <div class="row-2">
+    <label>Year
+      <input type="text" name="year" value="{{ p.year or '' }}" inputmode="numeric">
+    </label>
+    <label>Type
+      <input type="text" name="type" value="{{ p.type or '' }}"
+             list="type-options" placeholder="book, manual, …">
+    </label>
+  </div>
+  <div class="row-2">
+    <label>Category
+      <input type="text" name="category" value="{{ p.category or '' }}">
+    </label>
+    <label>ISBN
+      <input type="text" name="isbn" value="{{ p.isbn or '' }}">
+    </label>
+  </div>
+  <label>Tags <span class="hint">(comma separated)</span>
+    <input type="text" name="tags" value="{{ tags_str }}">
+  </label>
+  <datalist id="type-options">
+    <option value="book"><option value="manual"><option value="cheatsheet">
+    <option value="paper"><option value="reference"><option value="guide">
+  </datalist>
+  <div class="form-actions">
+    <button type="submit" class="primary">Save</button>
+    <button type="button" hx-get="/pdfs/{{ p.id }}/meta"
+            hx-target="#meta-panel" hx-swap="innerHTML">Cancel</button>
+  </div>
+</form>

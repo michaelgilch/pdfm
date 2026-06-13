@@ -1,0 +1,18 @@
+<a class="card" href="/pdfs/{{ p.id }}">
+  <div class="cover">
+    <img loading="lazy" src="/pdfs/{{ p.id }}/thumb" alt="cover of {{ p.title }}">
+  </div>
+  <div class="card-body">
+    <div class="card-title">{{ p.title }}</div>
+    {% if p.author %}<div class="card-author">{{ p.author }}</div>{% endif %}
+    <div class="card-meta">
+      {% if p.type %}<span class="badge">{{ p.type }}</span>{% endif %}
+      {% if p.year %}<span class="badge subtle">{{ p.year }}</span>{% endif %}
+    </div>
+    {% if p.tags %}
+    <div class="chips">
+      {% for t in p.tags %}<span class="chip">{{ t }}</span>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</a>

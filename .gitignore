@@ -1,15 +1,14 @@
-# Gradle
-.gradle
-build
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
 
-# IntelliJ
-.idea
+# Editors
+.idea/
+.vscode/
 
-# Configuration and logging
-db
-conf
-log
-
-# Debug Flags
-debugPauseDirectoryScanning
-
+# App runtime data (database, thumbnail cache) and local config
+/data/
+config.toml

@@ -1,0 +1,7 @@
+<tr onclick="window.location='/pdfs/{{ p.id }}'">
+  <td class="row-title">{{ p.title }}</td>
+  <td>{{ p.author or "" }}</td>
+  <td>{% if p.type %}<span class="badge">{{ p.type }}</span>{% endif %}</td>
+  <td>{{ p.year or "" }}</td>
+  <td>{% for t in p.tags %}<span class="chip">{{ t }}</span>{% endfor %}</td>
+</tr>

@@ -1,0 +1,21 @@
+# Copy to config.toml and edit. All values shown are the defaults, so an
+# empty or missing config.toml works fine. Env overrides use the PDFMAN_
+# prefix with "__" between sections, e.g. PDFMAN_LIBRARY__DIR=/path.
+
+[library]
+dir = "/data/pdf-library"   # folder containing your PDFs
+recursive = true            # also scan subfolders (false = top level only)
+
+[scan]
+interval_minutes = 0        # 0 = manual/on-startup only; >0 = rescan every N minutes
+on_startup = true           # scan once when the server starts
+
+[server]
+host = "127.0.0.1"          # localhost only
+port = 8000
+
+[ui]
+default_view = "grid"       # grid | list
+
+[features]
+extract_fulltext = false    # extract PDF text into the search index (slower scans)

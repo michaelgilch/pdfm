@@ -1,0 +1,26 @@
+<div class="meta-head">
+  <a class="back" href="/">← Library</a>
+  <a class="open-new" href="/pdfs/{{ p.id }}/file" target="_blank" rel="noopener">Open in new tab ↗</a>
+</div>
+
+<h1 class="meta-title">{{ p.title }}</h1>
+
+<dl class="meta-fields">
+  {% if p.author %}<dt>Author</dt><dd>{{ p.author }}</dd>{% endif %}
+  {% if p.publisher %}<dt>Publisher</dt><dd>{{ p.publisher }}</dd>{% endif %}
+  {% if p.year %}<dt>Year</dt><dd>{{ p.year }}</dd>{% endif %}
+  {% if p.type %}<dt>Type</dt><dd>{{ p.type }}</dd>{% endif %}
+  {% if p.category %}<dt>Category</dt><dd>{{ p.category }}</dd>{% endif %}
+  {% if p.isbn %}<dt>ISBN</dt><dd>{{ p.isbn }}</dd>{% endif %}
+  {% if p.page_count %}<dt>Pages</dt><dd>{{ p.page_count }}</dd>{% endif %}
+  <dt>File</dt><dd class="filename">{{ p.file_name }}</dd>
+</dl>
+
+{% if p.tags %}
+<div class="chips">
+  {% for t in p.tags %}<span class="chip">{{ t }}</span>{% endfor %}
+</div>
+{% endif %}
+
+<button class="primary" hx-get="/pdfs/{{ p.id }}/edit"
+        hx-target="#meta-panel" hx-swap="innerHTML">Edit metadata</button>
